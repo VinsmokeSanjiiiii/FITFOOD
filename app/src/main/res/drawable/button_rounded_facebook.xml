@@ -1,0 +1,15 @@
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Blue circle background -->
+    <item>
+        <shape android:shape="oval">
+            <solid android:color="#3b5998" />
+        </shape>
+    </item>
+
+    <!-- Optional: Add inset if needed -->
+    <item android:top="4dp" android:bottom="4dp" android:left="4dp" android:right="4dp">
+        <shape android:shape="oval">
+            <solid android:color="@android:color/transparent" />
+        </shape>
+    </item>
+</layer-list>

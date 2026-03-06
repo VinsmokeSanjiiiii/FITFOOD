@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:fitsSystemWindows="true"
+    android:padding="16dp">
+
+    <Button
+        android:id="@+id/btnGainMass"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/btn3"
+        android:backgroundTint="@color/today_color"
+        android:textColor="@color/white"
+        android:text="Gain Mass" />
+
+    <Button
+        android:id="@+id/btnLoseWeight"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Lose Weight"
+        android:background="@drawable/btn3"
+        android:backgroundTint="@color/today_color"
+        android:textColor="@color/white"
+        android:layout_marginTop="16dp" />
+</LinearLayout>

@@ -1,0 +1,73 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    android:background="#FFF5E6">
+
+    <LinearLayout
+        android:id="@+id/headerContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingVertical="20dp"
+        android:paddingHorizontal="16dp"
+        android:background="#FF5722"
+        android:elevation="8dp"
+        android:gravity="center_vertical">
+
+        <ImageButton
+            android:id="@+id/btnBack"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/back"
+            android:backgroundTint="@color/white"
+            android:contentDescription="Back" />
+
+        <TextView
+            android:id="@+id/foodTrackerTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Food And Calorie\n Tracker"
+            android:letterSpacing="0.1"
+            android:textAllCaps="true"
+            android:textSize="25sp"
+            android:textStyle="bold"
+            android:textColor="#FFFFFF"
+            android:gravity="center" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/buttonContainer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:layout_centerInParent="true">
+
+        <Button
+            android:id="@+id/btnMealLog"
+            android:layout_width="250dp"
+            android:layout_height="120dp"
+            android:layout_marginBottom="30dp"
+            android:background="@drawable/btn4"
+            android:backgroundTint="@color/today_color"
+            android:elevation="6dp"
+            android:textColor="@color/white"
+            android:text="🍴 Meal Log"
+            android:textSize="20sp" />
+
+        <Button
+            android:id="@+id/btnCalorieCalculator"
+            android:layout_width="250dp"
+            android:layout_height="120dp"
+            android:text="🔢 Calorie Calculator"
+            android:textSize="20sp"
+            android:backgroundTint="#4CAF50"
+            android:background="@drawable/btn4"
+            android:padding="10dp"
+            android:textColor="#FFFFFF"
+            android:elevation="6dp"/>
+    </LinearLayout>
+
+</RelativeLayout>

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="4dp">
+
+    <LinearLayout
+        android:id="@+id/layoutLeft"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="#E0E0E0"
+        android:padding="10dp"
+        android:layout_gravity="start"
+        android:layout_marginEnd="48dp"
+        android:visibility="gone"> <TextView android:id="@+id/tvMsgLeft"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#000000"
+        android:textSize="16sp"/>
+
+        <TextView android:id="@+id/tvTimeLeft"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="10sp"
+            android:textColor="#757575"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/layoutRight"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="#FFCCBC"
+        android:padding="10dp"
+        android:layout_gravity="end"
+        android:layout_marginStart="48dp"
+        android:visibility="gone"> <TextView android:id="@+id/tvMsgRight"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#000000"
+        android:textSize="16sp"/>
+
+        <TextView android:id="@+id/tvTimeRight"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="10sp"
+            android:layout_gravity="end"
+            android:textColor="#757575"/>
+    </LinearLayout>
+</LinearLayout>

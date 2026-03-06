@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@drawable/user_item_bg"
+    android:padding="12dp"
+    android:layout_margin="5dp"
+    android:layout_marginBottom="10dp"
+    android:fitsSystemWindows="true"
+    android:elevation="2dp">
+
+    <TextView
+        android:id="@+id/tvName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Juan Dela Cruz"
+        android:textStyle="bold"
+        android:textColor="#000"
+        android:textSize="18sp"/>
+
+    <TextView
+        android:id="@+id/tvEmailRole"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="juan@email.com  |  User"
+        android:textSize="14sp"
+        android:textColor="#555"
+        android:layout_marginTop="2dp"/>
+
+    <TextView
+        android:id="@+id/tvBirthday"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Birthday: January 1, 2000"
+        android:textSize="13sp"
+        android:textColor="#777"
+        android:layout_marginTop="2dp"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="end"
+        android:layout_marginTop="8dp">
+
+        <Button
+            android:id="@+id/btnUpdate"
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:text="Update"
+            android:textColor="#FFF"
+            android:backgroundTint="#FF9800"
+            android:background="@drawable/btn3"
+            android:minWidth="100dp"/>
+
+        <Button
+            android:id="@+id/btnDelete"
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:text="Delete"
+            android:textColor="#FFF"
+            android:backgroundTint="#F44336"
+            android:layout_marginStart="8dp"
+            android:background="@drawable/btn3"
+            android:minWidth="100dp"/>
+    </LinearLayout>
+</LinearLayout>

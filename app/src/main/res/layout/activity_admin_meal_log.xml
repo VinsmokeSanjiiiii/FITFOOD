@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#F5F5F5"
+    android:fitsSystemWindows="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#FF5722"
+        android:padding="16dp"
+        android:orientation="vertical"
+        android:elevation="4dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Global Meal Logs"
+            android:textColor="#FFF"
+            android:textStyle="bold"
+            android:textSize="20sp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:layout_marginTop="12dp">
+
+            <ImageButton
+                android:id="@+id/btnPrevDate"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:src="@android:drawable/ic_media_previous"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                app:tint="#FFF"/>
+
+            <TextView
+                android:id="@+id/tvSelectedDate"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:text="Oct 24, 2023"
+                android:textColor="#FFF"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:gravity="center"/>
+
+            <ImageButton
+                android:id="@+id/btnNextDate"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:src="@android:drawable/ic_media_next"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                app:tint="#FFF"/>
+
+            <ImageButton
+                android:id="@+id/btnPickDate"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:src="@android:drawable/ic_menu_my_calendar"
+                android:padding="8dp"
+                app:tint="#FF5722"
+                android:layout_marginStart="8dp"/>
+        </LinearLayout>
+    </LinearLayout>
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        app:cardCornerRadius="12dp"
+        app:cardBackgroundColor="#FFFFFF"
+        app:cardElevation="2dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="16dp"
+            android:gravity="center">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Total User Intake:"
+                android:textColor="#757575"/>
+
+            <TextView
+                android:id="@+id/tvTotalCaloriesToday"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0 kcal"
+                android:textSize="22sp"
+                android:textStyle="bold"
+                android:textColor="#FF5722"
+                android:layout_marginStart="12dp"/>
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+    <HorizontalScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:scrollbars="none"
+        android:paddingHorizontal="16dp">
+
+        <RadioGroup
+            android:id="@+id/rgFilter"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:orientation="horizontal"
+            android:background="@drawable/rounded_input_bg"
+            android:padding="2dp">
+
+            <RadioButton
+                android:id="@+id/rbAll"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="All"
+                android:button="@null"
+                android:paddingHorizontal="16dp"
+                android:gravity="center"
+                android:checked="true"
+                android:textColor="@color/toggle_text_selector"
+                android:background="@drawable/toggle_selector"/>
+
+            <RadioButton
+                android:id="@+id/rbBreakfast"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="Breakfast"
+                android:button="@null"
+                android:paddingHorizontal="16dp"
+                android:gravity="center"
+                android:textColor="@color/toggle_text_selector"
+                android:background="@drawable/toggle_selector"/>
+
+            <RadioButton
+                android:id="@+id/rbLunch"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="Lunch"
+                android:button="@null"
+                android:paddingHorizontal="16dp"
+                android:gravity="center"
+                android:textColor="@color/toggle_text_selector"
+                android:background="@drawable/toggle_selector"/>
+
+            <RadioButton
+                android:id="@+id/rbDinner"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="Dinner"
+                android:button="@null"
+                android:paddingHorizontal="16dp"
+                android:gravity="center"
+                android:textColor="@color/toggle_text_selector"
+                android:background="@drawable/toggle_selector"/>
+        </RadioGroup>
+    </HorizontalScrollView>
+
+    <EditText
+        android:id="@+id/etSearchMeal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="12dp"
+        android:background="@drawable/rounded_input_bg"
+        android:hint="Search by User or Meal..."
+        android:padding="12dp"
+        android:drawableStart="@android:drawable/ic_menu_search"
+        android:drawablePadding="8dp"/>
+
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipeRefresh"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_margin="10dp">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvMealLogs"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clipToPadding="false"
+                android:padding="13dp"
+                android:paddingBottom="20dp" />
+
+            <TextView
+                android:id="@+id/tvEmptyView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="No meals found for this date."
+                android:layout_gravity="center"
+                android:visibility="gone"
+                android:textColor="#9E9E9E"
+                android:textSize="16sp"/>
+        </FrameLayout>
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+</LinearLayout>

@@ -1,0 +1,334 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    android:background="#F5F5F5">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
+        android:elevation="0dp">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="#FF5722"
+            app:titleTextColor="#FFFFFF"
+            app:title="My Profile" />
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingBottom="80dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#FF5722"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:paddingBottom="30dp">
+
+                <ImageView
+                    android:id="@+id/imgAvatar"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:background="@drawable/use2"
+                    android:padding="2dp"
+                    android:elevation="4dp"/>
+
+                <TextView
+                    android:id="@+id/tvUserNameDisplay"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="User Name"
+                    android:textColor="#FFFFFF"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:layout_marginTop="12dp"/>
+
+                <TextView
+                    android:id="@+id/tvUserEmailDisplay"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="user@email.com"
+                    android:textColor="#FFCCBC"
+                    android:textSize="14sp"/>
+            </LinearLayout>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardNotifications"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginTop="-20dp"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="4dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="16dp"
+                    android:gravity="center_vertical">
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@android:drawable/ic_dialog_email"
+                        app:tint="#FF5722"/>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_marginStart="16dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Admin Messages"
+                            android:textStyle="bold"
+                            android:textColor="#212121"/>
+
+                        <TextView
+                            android:id="@+id/tvNotificationCount"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="No new messages"
+                            android:maxLines="1"
+                            android:ellipsize="end"
+                            android:textSize="12sp"
+                            android:textColor="#757575"/>
+                    </LinearLayout>
+
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/viewUnreadDot"
+                        android:layout_width="12dp"
+                        android:layout_height="12dp"
+                        app:cardCornerRadius="6dp"
+                        app:cardBackgroundColor="#FF0000"
+                        app:cardElevation="0dp"
+                        android:visibility="gone" />
+
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Personal Details"
+                android:textStyle="bold"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="20dp"
+                android:textColor="#424242"/>
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="16dp"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="2dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <EditText
+                        android:id="@+id/etName"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:hint="Full Name"
+                        android:background="@drawable/rounded_input_bg"
+                        android:paddingHorizontal="12dp"/>
+
+                    <EditText
+                        android:id="@+id/etEmail"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:hint="Email"
+                        android:layout_marginTop="12dp"
+                        android:background="@drawable/rounded_input_bg"
+                        android:paddingHorizontal="12dp"
+                        android:enabled="false"/>
+
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Body Metrics"
+                android:textStyle="bold"
+                android:layout_marginStart="20dp"
+                android:textColor="#424242"/>
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="16dp"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="2dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <EditText
+                            android:id="@+id/etWeight"
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="50dp"
+                            android:hint="Weight (kg)"
+                            android:layout_marginEnd="8dp"
+                            android:background="@drawable/rounded_input_bg"
+                            android:paddingHorizontal="12dp"
+                            android:inputType="numberDecimal"/>
+
+                        <EditText
+                            android:id="@+id/etHeight"
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="50dp"
+                            android:hint="Height (cm)"
+                            android:layout_marginStart="8dp"
+                            android:background="@drawable/rounded_input_bg"
+                            android:paddingHorizontal="12dp"
+                            android:inputType="numberDecimal"/>
+                    </LinearLayout>
+
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/cardLiveStatus"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="24dp"
+                        android:layout_marginBottom="10dp"
+                        android:visibility="gone"
+                        app:cardCornerRadius="12dp"
+                        app:cardElevation="4dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:padding="16dp">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                android:gravity="center_vertical">
+
+                                <TextView
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:text="Health Estimate"
+                                    android:textAllCaps="true"
+                                    android:textSize="12sp"
+                                    android:textStyle="bold"
+                                    android:textColor="#757575"/>
+
+                                <TextView
+                                    android:id="@+id/tvLiveBMI"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="BMI: --"
+                                    android:textSize="14sp"
+                                    android:textStyle="bold"
+                                    android:textColor="#333333"/>
+                            </LinearLayout>
+
+                            <TextView
+                                android:id="@+id/tvLiveStatus"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="Normal Weight"
+                                android:textSize="22sp"
+                                android:textStyle="bold"
+                                android:gravity="center"
+                                android:layout_marginTop="8dp"
+                                android:textColor="#4CAF50"/>
+
+                            <TextView
+                                android:id="@+id/tvLiveAdvice"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="Maintain your calorie intake to stay healthy."
+                                android:textSize="14sp"
+                                android:gravity="center"
+                                android:layout_marginTop="4dp"
+                                android:textColor="#555555"/>
+
+                        </LinearLayout>
+                    </androidx.cardview.widget.CardView>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:background="#FFF3E0"
+                        android:padding="12dp"
+                        android:gravity="center"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="CURRENT PLAN"
+                            android:textSize="10sp"
+                            android:letterSpacing="0.1"
+                            android:textStyle="bold"
+                            android:textColor="#FF5722"/>
+
+                        <TextView
+                            android:id="@+id/tvDailyCalories"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="2,000 kcal"
+                            android:textSize="24sp"
+                            android:textStyle="bold"
+                            android:textColor="#D84315"/>
+                    </LinearLayout>
+
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+        </LinearLayout>
+    </ScrollView>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabSave"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="24dp"
+        app:srcCompat="@android:drawable/ic_menu_save"
+        app:tint="#FFFFFF"
+        app:backgroundTint="#FF5722"
+        tools:ignore="ContentDescription" />
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

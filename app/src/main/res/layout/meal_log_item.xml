@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="12dp"
+    android:background="@drawable/user_item_bg"
+    android:layout_marginBottom="10dp"
+    android:fitsSystemWindows="true"
+    android:elevation="2dp">
+
+    <TextView
+        android:id="@+id/tvUser"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="User Name (email)"
+        android:textStyle="bold"
+        android:textSize="16sp"
+        android:textColor="#000" />
+
+    <TextView
+        android:id="@+id/tvMealType"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Meal Type"
+        android:textColor="#555"
+        android:layout_marginTop="2dp" />
+
+    <TextView
+        android:id="@+id/tvFoodName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Food Name"
+        android:textColor="#555"
+        android:layout_marginTop="2dp" />
+
+    <TextView
+        android:id="@+id/tvCalories"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Calories"
+        android:textColor="#777"
+        android:layout_marginTop="2dp" />
+
+    <Button
+        android:id="@+id/btnUpdateMeal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Update"
+        android:textColor="#FFF"
+        android:backgroundTint="@color/today_color"
+        android:background="@drawable/btn3"
+        android:layout_marginTop="8dp" />
+</LinearLayout>

@@ -1,0 +1,36 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:fitsSystemWindows="true"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/logo"
+        android:layout_width="match_parent"
+        android:layout_height="347dp"
+        android:layout_alignParentTop="true"
+        android:src="@drawable/fitfood_logo"
+        android:scaleType="centerInside" />
+
+    <LinearLayout
+        android:id="@+id/buttonContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:orientation="vertical"
+        android:gravity="center_horizontal"
+        android:paddingBottom="40dp">
+
+        <Button
+            android:id="@+id/getStartedButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Get Started"
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            android:layout_margin="15dp"
+            android:background="@drawable/button_rect_green"
+            android:backgroundTint="@null" />
+
+    </LinearLayout>
+
+</RelativeLayout>

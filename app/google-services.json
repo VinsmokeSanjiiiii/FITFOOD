@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "393920866629",
+    "project_id": "fitfood-f2836",
+    "storage_bucket": "fitfood-f2836.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:393920866629:android:0ca84df81235bc0a77762c",
+        "android_client_info": {
+          "package_name": "com.fitfood.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBGd39QQPHSDeGFWTR2gBdrYTK4qtSDbBY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

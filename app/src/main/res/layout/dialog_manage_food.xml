@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="20dp"
+        android:background="#FFF">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Food Details"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="16dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Food Image:"
+            android:textStyle="bold"
+            android:layout_marginTop="8dp"/>
+
+        <FrameLayout
+            android:id="@+id/btnSelectImageWrapper"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:layout_marginTop="8dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?attr/selectableItemBackground"
+            android:background="@drawable/rounded_input_bg">
+
+            <ImageView
+                android:id="@+id/imgPreview"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                android:src="@android:drawable/ic_menu_gallery"
+                android:padding="60dp"
+                app:tint="#BDBDBD"/>
+
+            <TextView
+                android:id="@+id/tvTapToUpload"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Tap to Upload Image"
+                android:layout_gravity="bottom|center_horizontal"
+                android:layout_marginBottom="12dp"
+                android:background="#80000000"
+                android:textColor="#FFF"
+                android:paddingHorizontal="12dp"
+                android:paddingVertical="4dp"
+                android:textSize="12sp"/>
+        </FrameLayout>
+
+        <EditText
+            android:id="@+id/etFoodImage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:inputType="none"/>
+
+        <EditText
+            android:id="@+id/etFoodName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Food Name (e.g. Oatmeal)"
+            android:background="@drawable/rounded_input_bg"
+            android:padding="12dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"/>
+
+        <EditText
+            android:id="@+id/etFoodDesc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Description / Benefits"
+            android:background="@drawable/rounded_input_bg"
+            android:padding="12dp"
+            android:layout_marginBottom="8dp"/>
+
+        <EditText
+            android:id="@+id/etFoodIngredients"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Ingredients (e.g. Oats, Water, Salt)"
+            android:inputType="textMultiLine|textCapSentences"
+            android:minLines="2"
+            android:gravity="top|start"
+            android:background="@drawable/rounded_input_bg"
+            android:padding="12dp"
+            android:layout_marginBottom="8dp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <EditText
+                android:id="@+id/etFoodKcal"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:hint="Kcal"
+                android:inputType="numberDecimal"
+                android:background="@drawable/rounded_input_bg"
+                android:padding="12dp"
+                android:layout_marginEnd="8dp"/>
+
+            <EditText
+                android:id="@+id/etFoodGrams"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:hint="Grams (Base)"
+                android:inputType="numberDecimal"
+                android:background="@drawable/rounded_input_bg"
+                android:padding="12dp"/>
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Category:"
+            android:textStyle="bold"
+            android:layout_marginTop="16dp"/>
+
+        <Spinner
+            android:id="@+id/spFoodCategory"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:entries="@array/food_categories"
+            android:background="@drawable/rounded_spinner_bg"
+            android:layout_marginTop="4dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Available for (Meal Types):"
+            android:textStyle="bold"
+            android:layout_marginTop="16dp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <CheckBox android:id="@+id/cbBreakfast" android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:text="Breakfast"/>
+                <CheckBox android:id="@+id/cbLunch" android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:text="Lunch"/>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <CheckBox android:id="@+id/cbDinner" android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:text="Dinner"/>
+                <CheckBox android:id="@+id/cbSnack" android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:text="Snacks"/>
+            </LinearLayout>
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/btnSaveFood"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Save Food Item"
+            android:background="@drawable/btn3"
+            android:backgroundTint="#4CAF50"
+            android:textColor="#FFF"
+            android:layout_marginTop="24dp"/>
+
+    </LinearLayout>
+</ScrollView>

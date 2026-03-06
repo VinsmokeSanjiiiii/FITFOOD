@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="16dp"
+    android:fitsSystemWindows="true"
+    android:background="#FFFFFF">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <EditText
+            android:id="@+id/etMealName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Meal Name"
+            android:padding="16dp"
+            android:background="@drawable/txt_bg1"
+            android:layout_marginBottom="10dp"/>
+
+        <Spinner
+            android:id="@+id/spinnerMealType"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="48dp"
+            android:padding="16dp"
+            android:background="@drawable/txt_bg1"
+            android:layout_marginBottom="10dp"/>
+
+        <EditText
+            android:id="@+id/etCalories"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Calories"
+            android:inputType="number"
+            android:padding="16dp"
+            android:background="@drawable/txt_bg1"
+            android:layout_marginBottom="10dp"/>
+
+        <EditText
+            android:id="@+id/etMealDate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Meal Date"
+            android:focusable="false"
+            android:background="@drawable/txt_bg1"
+            android:padding="16dp"
+            android:layout_marginBottom="16dp"/>
+
+        <Button
+            android:id="@+id/btnSaveMeal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Save"
+            android:background="@drawable/btn3"
+            android:backgroundTint="@color/today_color"
+            android:textColor="#FFFFFF"/>
+    </LinearLayout>
+</ScrollView>

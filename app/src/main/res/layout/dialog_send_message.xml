@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="20dp">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Message Content"
+        android:textStyle="bold"
+        android:layout_marginBottom="8dp"/>
+
+    <EditText
+        android:id="@+id/etMessageContent"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:hint="Type your message here..."
+        android:gravity="top|start"
+        android:background="@drawable/rounded_input_bg"
+        android:padding="12dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Quick Templates:"
+        android:layout_marginTop="12dp"
+        android:textSize="12sp"
+        android:textColor="#757575"/>
+
+    <RadioGroup
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="8dp">
+
+        <RadioButton
+            android:id="@+id/rbWarning"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:text="⚠️ Missing Logs"
+            android:button="@null"
+            android:paddingHorizontal="12dp"
+            android:gravity="center"
+            android:background="@drawable/toggle_selector"
+            android:textColor="@color/toggle_text_selector"
+            android:layout_marginEnd="8dp"/>
+
+        <RadioButton
+            android:id="@+id/rbReminder"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:text="⏰ Breakfast"
+            android:button="@null"
+            android:paddingHorizontal="12dp"
+            android:gravity="center"
+            android:background="@drawable/toggle_selector"
+            android:textColor="@color/toggle_text_selector"/>
+    </RadioGroup>
+
+    <Button
+        android:id="@+id/btnSendNow"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Send Message"
+        android:backgroundTint="#FF5722"
+        android:background="@drawable/btn3"
+        android:textColor="#FFF"
+        android:layout_marginTop="16dp"/>
+
+</LinearLayout>

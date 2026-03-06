@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:fitsSystemWindows="true"
+    android:layout_height="match_parent"
+    android:background="#CC000000">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@drawable/dialog_bg"
+        android:padding="16dp"
+        android:layout_gravity="center"
+        android:clipToPadding="false"
+        android:elevation="8dp"
+        android:layout_margin="24dp"
+        android:layout_marginBottom="32dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp">
+
+        <ImageView
+            android:id="@+id/btnCloseDialog"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_gravity="end"
+            android:src="@drawable/ic_close"
+            app:tint="@android:color/black"
+            android:contentDescription="Close" />
+
+        <ImageView
+            android:id="@+id/imgFoodDialog"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            android:scaleType="fitCenter"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="12dp"
+            android:contentDescription="Food image" />
+
+        <TextView
+            android:id="@+id/tvFoodNameDialog"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Food Name"
+            android:textAllCaps="true"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="@android:color/black"
+            android:layout_marginBottom="8dp" />
+
+        <TextView
+            android:id="@+id/tvFoodDescDialog"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Detailed description here..."
+            android:textSize="16sp"
+            android:textColor="@android:color/darker_gray"
+            android:layout_marginBottom="12dp" />
+
+        <TextView
+            android:id="@+id/tvCaloriesDialog"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="250g • 350 kcal"
+            android:textSize="16sp"
+            android:textColor="@android:color/black"
+            android:textStyle="italic"
+            android:layout_marginBottom="14dp" />
+
+        <TextView
+            android:id="@+id/tvIngredientsLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Ingredients"
+            android:textStyle="bold"
+            android:layout_marginBottom="3dp"
+            android:textColor="#424242"/>
+
+        <TextView
+            android:id="@+id/tvIngredientsDialog"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Chicken breast, olive oil, salt, pepper, garlic powder."
+            android:textColor="#616161"
+            android:layout_marginTop="4dp"
+            android:lineSpacingExtra="4dp"
+            android:layout_marginBottom="16dp"
+            android:background="#F9F9F9"
+            android:padding="8dp"/>
+
+        <Button
+            android:id="@+id/btnAddDialog"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Add to Meal"
+            android:textSize="16sp"
+            android:textColor="@android:color/white"
+            android:backgroundTint="@color/primaryColor"
+            android:background="@drawable/btn3"
+            android:layout_marginTop="8dp" />
+
+    </LinearLayout>
+
+</FrameLayout>

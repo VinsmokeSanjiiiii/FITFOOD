@@ -1,0 +1,42 @@
+<resources>
+
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="light_gray">#E0E0E0</color>
+    <color name="dark_gray">#555555</color>
+    <color name="orange">#FFA500</color>
+    <color name="primaryColor">#FF5722</color>
+    <color name="primary">#4CAF50</color>
+    <color name="orange_200">#FFE0B2</color>
+    <color name="orange_500">#FB8C00</color>
+    <color name="orange_700">#EF6C00</color>
+    <color name="green_500">#4CAF50</color>
+    <color name="green_700">#388E3C</color>
+    <color name="teal_200">#80CBC4</color>
+    <color name="red">#FF0000</color>
+    <color name="blue1">#052659</color>
+    <color name="blue2">#3B6592</color>
+    <color name="blue3">#2D4473</color>
+    <color name="blue4">#7A98BF</color>
+    <color name="blue5">#3B6592</color>
+    <color name="blue6">#536493</color>
+    <color name="blue7">#0000FF</color>
+    <color name="blue8">#3ABEF9</color>
+    <color name="khaki">#D4BDAC</color>
+    <color name="khaki1">#FFF1DB</color>
+    <color name="overlay_background">#80000000</color>
+    <color name="green">#5CB338</color>
+    <color name="yellow">#FFD95F</color>
+    <color name="green2">#4CAF50</color>
+    <color name="yellow2">#FFEB3B</color>
+    <color name="red2">#F44336</color>
+    <color name="switch_thumb">#FF6F61</color>
+    <color name="switch_track">#FFD1C4</color>
+    <color name="salmon_light">#FF9999</color>
+    <color name="dark_blue">#301B4B</color>
+    <color name="gray">#E4E4E4</color>
+    <color name="medicine_color">#1976D2</color>
+    <color name="checkup_color">#388E3C</color>
+    <color name="today_color">#FF5722</color>
+
+</resources>

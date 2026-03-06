@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">FitFood</string>
+    <string name="already_have_account">May account ka na? Mag-login</string>
+    <string name="action_settings">Mga Setting</string>
+    <string name="get_started">Magsimula</string>
+    <string name="next">Susunod</string>
+    <string name="previous">Nakaraan</string>
+    <string name="first_fragment_label">Unang Pahina</string>
+    <string name="second_fragment_label">Ikalawang Pahina</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+
+    <!-- Language Switcher -->
+    <string name="language">Wika</string>
+    <string name="english">Ingles</string>
+    <string name="tagalog">Tagalog</string>
+
+    <string name="language_settings">Language Settings</string>
+
+    <string-array name="food_categories">
+        <item>Protein</item>
+        <item>Carbs</item>
+        <item>Fats</item>
+        <item>Vitamins</item>
+    </string-array>
+
+
+</resources>

@@ -1,0 +1,359 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/drawerLayout"
+    android:layout_width="match_parent"
+    android:fitsSystemWindows="true"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/primaryColor"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+            app:navigationIcon="@drawable/ham_burger" />
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/bg_gradient"
+            android:paddingTop="32dp"
+            android:padding="16dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center_horizontal">
+
+                <ImageView
+                    android:id="@+id/logoImage"
+                    android:layout_width="match_parent"
+                    android:layout_height="70dp"
+                    android:layout_marginBottom="16dp"
+                    android:src="@drawable/fitfood_logo" />
+
+                <androidx.viewpager2.widget.ViewPager2
+                    android:id="@+id/bannerViewPager"
+                    android:layout_width="match_parent"
+                    android:layout_height="180dp"
+                    android:clipToPadding="false"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    android:overScrollMode="never"
+                    android:layout_marginBottom="1dp"/>
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/cardStatus"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="16dp"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="4dp"
+                    app:cardBackgroundColor="@android:color/white">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+
+                        android:padding="20dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="My Daily Goals"
+                            android:textSize="18sp"
+                            android:textStyle="bold"
+                            android:textColor="#333333"/>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:layout_marginTop="16dp"
+                            android:baselineAligned="false">
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical"
+                                android:gravity="center">
+
+                                <ImageView
+                                    android:layout_width="32dp"
+                                    android:layout_height="32dp"
+                                    android:src="@drawable/kcal_fire"
+                                    app:tint="#FF5722"/>
+                                <TextView
+                                    android:id="@+id/tvDashCalories"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="-- kcal"
+                                    android:textSize="20sp"
+                                    android:textStyle="bold"
+                                    android:textColor="#FF5722"
+                                    android:layout_marginTop="4dp"/>
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Daily Target"
+                                    android:textSize="12sp"
+                                    android:textColor="#757575"/>
+                            </LinearLayout>
+
+                            <View
+                                android:layout_width="1dp"
+                                android:layout_height="match_parent"
+                                android:background="#EEEEEE"
+                                android:layout_marginHorizontal="8dp"/>
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical"
+                                android:gravity="center">
+
+                                <ImageView
+                                    android:layout_width="32dp"
+                                    android:layout_height="32dp"
+                                    android:src="@drawable/scale_icon"
+                                    app:tint="#2196F3"/>
+                                <TextView
+                                    android:id="@+id/tvDashWeight"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="-- kg"
+                                    android:textSize="20sp"
+                                    android:textStyle="bold"
+                                    android:textColor="#2196F3"
+                                    android:layout_marginTop="4dp"/>
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Current Weight"
+                                    android:textSize="12sp"
+                                    android:textColor="#757575"/>
+                            </LinearLayout>
+                        </LinearLayout>
+
+                        <TextView
+                            android:id="@+id/tvDashGoal"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Goal: Loading..."
+                            android:gravity="center"
+                            android:layout_marginTop="12dp"
+                            android:background="@drawable/rounded_light"
+                            android:padding="6dp"
+                            android:textColor="#555555"
+                            android:textSize="12sp"/>
+
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="16dp">
+
+                    <LinearLayout
+                        android:id="@+id/cardHealthRisk"
+                        android:layout_width="0dp"
+                        android:layout_height="180dp"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:padding="12dp"
+                        android:layout_marginEnd="8dp"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:background="@drawable/card_bg"
+                        android:elevation="8dp"
+                        android:gravity="center_vertical">
+
+                        <ImageView
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:layout_marginBottom="8dp"
+                            android:src="@drawable/health_info"
+                            android:layout_gravity="center_horizontal" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Health Risk Info"
+                            android:textColor="#212121"
+                            android:textStyle="bold"
+                            android:textSize="16sp"
+                            android:layout_gravity="center_horizontal"/>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/cardFoodGuide"
+                        android:layout_width="0dp"
+                        android:layout_height="180dp"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:padding="12dp"
+                        android:layout_marginStart="8dp"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:background="@drawable/card_bg"
+                        android:elevation="8dp"
+                        android:gravity="center_vertical">
+
+                        <ImageView
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:src="@drawable/food_guide"
+                            android:layout_gravity="center_horizontal"
+                            android:layout_marginBottom="8dp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Food Guide"
+                            android:textColor="#212121"
+                            android:textStyle="bold"
+                            android:textSize="16sp"
+                            android:layout_gravity="center_horizontal"/>
+                    </LinearLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center"
+                    android:layout_marginBottom="16dp">
+
+                    <LinearLayout
+                        android:id="@+id/cardTracker"
+                        android:layout_width="0dp"
+                        android:layout_height="180dp"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:padding="12dp"
+                        android:layout_marginEnd="8dp"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:background="@drawable/card_bg"
+                        android:elevation="8dp"
+                        android:gravity="center_vertical">
+
+                        <ImageView
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:src="@drawable/calorie_tracker"
+                            android:layout_gravity="center_horizontal"
+                            android:layout_marginBottom="8dp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Food &amp; Calorie Tracker"
+                            android:gravity="center"
+                            android:textColor="#212121"
+                            android:textStyle="bold"
+                            android:textSize="16sp"
+                            android:layout_gravity="center_horizontal"/>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/cardProgress"
+                        android:layout_width="0dp"
+                        android:layout_height="180dp"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:padding="12dp"
+                        android:layout_marginStart="8dp"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:background="@drawable/card_bg"
+                        android:elevation="8dp"
+                        android:gravity="center_vertical">
+
+                        <ImageView
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:src="@drawable/progress_report"
+                            android:layout_gravity="center_horizontal"
+                            android:layout_marginBottom="8dp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Progress Report and Monitoring"
+                            android:textColor="#212121"
+                            android:textStyle="bold"
+                            android:gravity="center"
+                            android:textSize="16sp"
+                            android:layout_gravity="center_horizontal"/>
+                    </LinearLayout>
+                </LinearLayout>
+
+            </LinearLayout>
+        </ScrollView>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/navDrawer"
+        android:layout_width="280dp"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="@drawable/card_bg"
+        android:paddingTop="60dp"
+        android:layout_gravity="start">
+
+        <TextView
+            android:id="@+id/tabReminders"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Reminders"
+            android:padding="16dp"
+            android:textSize="25sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tabHealthTips"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Health Tips"
+            android:padding="16dp"
+            android:textSize="25sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tabProfile"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Account Profile"
+            android:padding="16dp"
+            android:textSize="25sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tabLogout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Log Out"
+            android:padding="16dp"
+            android:textSize="25sp"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
+</androidx.drawerlayout.widget.DrawerLayout>
