@@ -2,12 +2,14 @@ package com.fitfood.app;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.util.Base64;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.*;
@@ -46,6 +48,8 @@ public class MealLogActivity extends AppCompatActivity {
     private FirebaseAuth auth;
     private ActivityResultLauncher<Intent> addMealLauncher;
     private String userGoal = "weight_loss";
+    private ComboMealView comboMealView;
+    private List<FoodItem> availableFoodsCache;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,6 +68,8 @@ public class MealLogActivity extends AppCompatActivity {
         auth = FirebaseAuth.getInstance();
         fetchUserData();
         loadMealsFromFirebase();
+        initializeComboMealSection();
+        loadFoodsForComboGeneration();
         addMealLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
@@ -135,7 +141,6 @@ public class MealLogActivity extends AppCompatActivity {
 
         if (imageBase64 != null && !imageBase64.isEmpty()) {
             if (!imageBase64.startsWith("http")) {
-                // Decode in background to avoid lag
                 new Thread(() -> {
                     try {
                         byte[] decodedString = Base64.decode(imageBase64, Base64.DEFAULT);
@@ -373,5 +378,158 @@ public class MealLogActivity extends AppCompatActivity {
                                 });
                     }
                 });
+    }
+
+    private void initializeComboMealSection() {
+        LinearLayout comboContainer = findViewById(R.id.mealLogContent);
+        comboMealView = new ComboMealView(this, comboContainer);
+        comboMealView.setOnComboActionListener(new ComboMealView.OnComboActionListener() {
+            @Override
+            public void onAddComboToLog(ComboMeal combo) {
+                addComboToMealLog(combo);
+            }
+
+            @Override
+            public void onViewComboDetails(ComboMeal combo) {
+                showComboDetailsDialog(combo);
+            }
+
+            @Override
+            public void onRefreshCombo() {
+                generateNewComboSuggestion();
+            }
+
+            @Override
+            public void onLikeCombo(ComboMeal combo) {
+                saveLikedCombo(combo);
+            }
+        });
+
+        if (comboMealView.getView().getParent() == null) {
+            comboContainer.addView(comboMealView.getView(), 0);
+        }
+    }
+
+    private void loadFoodsForComboGeneration() {
+        SharedPreferences prefs = getSharedPreferences("fitfood_prefs", MODE_PRIVATE);
+        String goalChoice = prefs.getString("goalType", "loss");
+        userGoal = goalChoice.equals("gain") ? "weight_gain" : "weight_loss";
+
+        FirebaseFirestore.getInstance()
+                .collection("foods_v2")
+                .get()
+                .addOnSuccessListener(querySnapshot -> {
+                    availableFoodsCache = new ArrayList<>();
+
+                    for (QueryDocumentSnapshot doc : querySnapshot) {
+                        try {
+                            FoodItem food = doc.toObject(FoodItem.class);
+                            food.setId(doc.getId());
+
+                            double baseGrams = food.getGrams();
+                            if (userGoal.equals("weight_loss")) {
+                                food.setSuggestedGrams(baseGrams * 0.85);
+                            } else if (userGoal.equals("weight_gain")) {
+                                food.setSuggestedGrams(baseGrams * 1.15);
+                            } else {
+                                food.setSuggestedGrams(baseGrams);
+                            }
+
+                            availableFoodsCache.add(food);
+                        } catch (Exception e) {
+                            Log.e("MealLog", "Error parsing food: " + e.getMessage());
+                        }
+                    }
+
+                    generateNewComboSuggestion();
+                })
+                .addOnFailureListener(e -> {
+                    Log.e("MealLog", "Failed to load foods for combo: " + e.getMessage());
+                    comboMealView.getView().setVisibility(View.GONE);
+                });
+    }
+
+    private void generateNewComboSuggestion() {
+        if (availableFoodsCache == null || availableFoodsCache.isEmpty()) {
+            comboMealView.getView().setVisibility(View.GONE);
+            return;
+        }
+
+        String currentMealType = determineCurrentMealType();
+        ComboMeal combo = ComboMealGenerator.generateCombo(
+                availableFoodsCache,
+                currentMealType,
+                userGoal
+        );
+
+        if (combo != null && combo.isValid()) {
+            comboMealView.setComboMeal(combo);
+            comboMealView.getView().setVisibility(View.VISIBLE);
+        } else {
+            comboMealView.getView().setVisibility(View.GONE);
+        }
+    }
+
+    private String determineCurrentMealType() {
+        int hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
+
+        if (hour >= 5 && hour < 11) return "Breakfast";
+        if (hour >= 11 && hour < 15) return "Lunch";
+        if (hour >= 15 && hour < 18) return "Snacks";
+        return "Dinner";
+    }
+
+    private void addComboToMealLog(ComboMeal combo) {
+        if (combo == null || combo.getItems().isEmpty()) return;
+
+        String mealType = combo.getMealType();
+        if (mealType == null || mealType.isEmpty()) {
+            mealType = determineCurrentMealType();
+        }
+
+        MealSection targetSection = getSectionByName(mealType);
+        for (ComboMeal.ComboItem item : combo.getItems()) {
+            FoodItem food = item.getFoodItem();
+            addMealToSection(
+                    targetSection,
+                    food.getName(),
+                    item.getCalculatedCalories(),
+                    item.getPortionGrams(),
+                    food.getImage(),
+                    true
+            );
+        }
+
+        Toast.makeText(this,
+                String.format(Locale.getDefault(), "Added %d items to %s",
+                        combo.getItems().size(), mealType),
+                Toast.LENGTH_SHORT).show();
+    }
+
+    private void showComboDetailsDialog(ComboMeal combo) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(combo.getDisplayName());
+
+        StringBuilder message = new StringBuilder();
+        message.append("Meal Type: ").append(combo.getMealType()).append("\n\n");
+        message.append("Items:\n");
+
+        for (ComboMeal.ComboItem item : combo.getItems()) {
+            message.append("• ").append(item.getFoodItem().getName()).append("\n");
+            message.append("  ").append(item.getDisplayText()).append("\n\n");
+        }
+
+        message.append("\nTotal: ")
+                .append(String.format(Locale.getDefault(), "%.0f kcal, %.0fg",
+                        combo.getTotalCalories(), combo.getTotalGrams()));
+
+        builder.setMessage(message.toString());
+        builder.setPositiveButton("Add to Log", (dialog, which) -> addComboToMealLog(combo));
+        builder.setNegativeButton("Close", null);
+        builder.show();
+    }
+
+    private void saveLikedCombo(ComboMeal combo) {
+        // Optional: Save to Firestore for personalized suggestions
     }
 }
