@@ -1,96 +1,127 @@
 package com.fitfood.app;
 
-import android.os.Build;
 import android.os.Bundle;
-import android.text.Html;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.tabs.TabLayout;
+import java.util.ArrayList;
+import java.util.List;
 
 public class InstructionsActivity extends AppCompatActivity {
 
-    private TextView tvContent;
+    private RecyclerView recyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_instructions);
+
         ImageButton btnBack = findViewById(R.id.btnBack);
         TabLayout tabLayout = findViewById(R.id.tabLayout);
-        tvContent = findViewById(R.id.tvInstructionContent);
-        showUserInstructions();
+        recyclerView = findViewById(R.id.rvInstructions);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        loadUserInstructions();
+
         btnBack.setOnClickListener(v -> finish());
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 if (tab.getPosition() == 0) {
-                    showUserInstructions();
+                    loadUserInstructions();
                 } else {
-                    showAdminInstructions();
+                    loadAdminInstructions();
                 }
             }
-            @Override
-            public void onTabUnselected(TabLayout.Tab tab) {}
-            @Override
-            public void onTabReselected(TabLayout.Tab tab) {}
+            @Override public void onTabUnselected(TabLayout.Tab tab) {}
+            @Override public void onTabReselected(TabLayout.Tab tab) {}
         });
     }
 
-    private void showUserInstructions() {
-        String html = "<b>1. Create an Account / Login</b><br/>" +
-                "Register using Email or Google. Confirm your Google account if prompted.<br/><br/>" +
+    private void loadUserInstructions() {
+        List<InstructionStep> steps = new ArrayList<>();
 
-                "<b>2. Choose Your Goal</b><br/>" +
-                "Select <b>Weight Loss</b> or <b>Weight Gain</b> to adjust your calorie recommendation.<br/><br/>" +
+        steps.add(new InstructionStep("1. Create an Account / Login", "Register using Email or Google. Confirm your Google account if prompted.", R.drawable.step_login2));
+        steps.add(new InstructionStep("2. Choose Your Goal", "Select Weight Loss or Weight Gain to adjust your calorie recommendation.", R.drawable.step_goal));
+        steps.add(new InstructionStep("3. Check Health Risks", "Read about obesity-related diseases and tips to stay aware.", R.drawable.step_risks));
+        steps.add(new InstructionStep("4. View the Food Guide", "Check recommended foods and items to limit for better choices.", R.drawable.step_guide));
+        steps.add(new InstructionStep("5. Use the Calorie Calculator", "Enter age, weight, and height to compute daily needs.", R.drawable.step_calc));
+        steps.add(new InstructionStep("6. Log Your Meals", "Select Breakfast, Lunch, Dinner, or Snacks and add food items.", R.drawable.step_log));
+        steps.add(new InstructionStep("7. Track Your Progress", "View daily trends, remaining calories, and weight changes.", R.drawable.step_track));
+        steps.add(new InstructionStep("8. Admin Monitoring", "Admins monitor data to provide guidance and support.", R.drawable.step_admin_info));
 
-                "<b>3. Check Health Risks</b><br/>" +
-                "Read about obesity-related diseases and tips to stay aware.<br/><br/>" +
+        recyclerView.setAdapter(new InstructionAdapter(steps));
+    }
 
-                "<b>4. View the Food Guide</b><br/>" +
-                "Check recommended foods and items to limit for better choices.<br/><br/>" +
+    private void loadAdminInstructions() {
+        List<InstructionStep> steps = new ArrayList<>();
 
-                "<b>5. Use the Calorie Calculator</b><br/>" +
-                "Enter age, weight, and height to compute daily needs. <i>Do this before logging meals.</i><br/><br/>" +
+        steps.add(new InstructionStep("1. Welcome Admin", "Admin accounts are created by existing admins. Login with your credentials.", R.drawable.step_login));
+        steps.add(new InstructionStep("2. Dashboard & Overview", "View total registered users and monitor engagement.", R.drawable.admin_dash));
+        steps.add(new InstructionStep("3. Progress & Meal Logs", "Check weight trends and review meal logs for compliance.", R.drawable.admin_logs));
+        steps.add(new InstructionStep("4. Food Library Management", "Add, edit, or remove food items to keep the database accurate.", R.drawable.admin_library));
+        steps.add(new InstructionStep("5. User Management", "Create new admins and send messages to users needing support.", R.drawable.admin_users));
 
-                "<b>6. Log Your Meals</b><br/>" +
-                "Select Breakfast, Lunch, Dinner, or Snacks and add food items.<br/><br/>" +
+        recyclerView.setAdapter(new InstructionAdapter(steps));
+    }
 
-                "<b>7. Track Your Progress</b><br/>" +
-                "View daily trends, remaining calories, and weight changes.<br/><br/>" +
+    static class InstructionStep {
+        String title;
+        String description;
+        int imageRes;
 
-                "<b>8. Admin Monitoring</b><br/>" +
-                "Admins monitor data to provide guidance and support.<br/><br/>" +
-
-                "<i>Repeat daily for a healthier lifestyle!</i>";
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            tvContent.setText(Html.fromHtml(html, Html.FROM_HTML_MODE_COMPACT));
+        public InstructionStep(String title, String description, int imageRes) {
+            this.title = title;
+            this.description = description;
+            this.imageRes = imageRes;
         }
     }
 
-    private void showAdminInstructions() {
-        String html = "<b>Welcome Admin</b><br/>" +
-                "1. Admin accounts are created by existing admins.<br/>" +
-                "2. Login with your admin credentials.<br/><br/>" +
+    private class InstructionAdapter extends RecyclerView.Adapter<InstructionAdapter.ViewHolder> {
+        private final List<InstructionStep> steps;
 
-                "<b>2. Dashboard & User Overview</b><br/>" +
-                "View total registered users and monitor engagement.<br/><br/>" +
+        public InstructionAdapter(List<InstructionStep> steps) {
+            this.steps = steps;
+        }
 
-                "<b>3. User Progress & Meal Logs</b><br/>" +
-                "Check weight trends and review meal logs for compliance.<br/><br/>" +
+        @NonNull
+        @Override
+        public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_instruction, parent, false);
+            return new ViewHolder(view);
+        }
 
-                "<b>4. Food Library Management</b><br/>" +
-                "Add, edit, or remove food items to keep the database accurate.<br/><br/>" +
+        @Override
+        public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+            InstructionStep step = steps.get(position);
+            holder.tvTitle.setText(step.title);
+            holder.tvDesc.setText(step.description);
+            holder.ivImage.setImageResource(step.imageRes);
+        }
 
-                "<b>5. User Management</b><br/>" +
-                "Create new admins, edit user details, and <b>send messages</b> to users needing support.<br/><br/>" +
+        @Override
+        public int getItemCount() {
+            return steps.size();
+        }
 
-                "<b>6. Monitoring</b><br/>" +
-                "Actively monitor activity and guide users who are off-track.";
+        class ViewHolder extends RecyclerView.ViewHolder {
+            TextView tvTitle, tvDesc;
+            ImageView ivImage;
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            tvContent.setText(Html.fromHtml(html, Html.FROM_HTML_MODE_COMPACT));
+            public ViewHolder(@NonNull View itemView) {
+                super(itemView);
+                tvTitle = itemView.findViewById(R.id.tvStepTitle);
+                tvDesc = itemView.findViewById(R.id.tvStepDescription);
+                ivImage = itemView.findViewById(R.id.ivStepImage);
+            }
         }
     }
 }

@@ -60,19 +60,12 @@
         app:cardCornerRadius="12dp"
         app:cardElevation="4dp">
 
-        <ScrollView
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvInstructions"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:clipToPadding="false"
+            android:paddingBottom="16dp"/>
 
-            <TextView
-                android:id="@+id/tvInstructionContent"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="20dp"
-                android:textSize="16sp"
-                android:textColor="#424242"
-                android:lineSpacingMultiplier="1.3"
-                android:text="Loading instructions..."/>
-        </ScrollView>
     </androidx.cardview.widget.CardView>
 </LinearLayout>
