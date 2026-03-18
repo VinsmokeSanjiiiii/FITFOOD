@@ -44,7 +44,18 @@
                     android:layout_height="40dp"
                     android:background="?attr/selectableItemBackgroundBorderless"
                     android:src="@drawable/ic_heart_outline"
-                    app:tint="@color/white" />
+                    app:tint="@color/white"
+                    android:contentDescription="Like this combo" />
+
+                <ImageButton
+                    android:id="@+id/btnDislikeCombo"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_marginStart="8dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:src="@drawable/ic_thumb_down_outline"
+                    app:tint="@color/white"
+                    android:contentDescription="Dislike this combo" />
 
                 <ImageButton
                     android:id="@+id/btnRefreshCombo"
@@ -53,7 +64,8 @@
                     android:layout_marginStart="8dp"
                     android:background="?attr/selectableItemBackgroundBorderless"
                     android:src="@drawable/ic_refresh"
-                    app:tint="@color/white" />
+                    app:tint="@color/white"
+                    android:contentDescription="Get new suggestion" />
             </LinearLayout>
 
             <LinearLayout
@@ -70,7 +82,11 @@
                     android:text="Tapsilog Combo"
                     android:textColor="@color/white"
                     android:textSize="24sp"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    android:shadowColor="@color/black"
+                    android:shadowDx="1"
+                    android:shadowDy="1"
+                    android:shadowRadius="2" />
 
                 <TextView
                     android:id="@+id/tvComboSubtitle"
@@ -78,9 +94,67 @@
                     android:layout_height="wrap_content"
                     android:text="Breakfast • 3 items"
                     android:textColor="@color/white"
-                    android:textSize="14sp" />
+                    android:textSize="14sp"
+                    android:shadowColor="@color/black"
+                    android:shadowDx="1"
+                    android:shadowDy="1"
+                    android:shadowRadius="2" />
             </LinearLayout>
         </FrameLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="16dp"
+            android:gravity="center_vertical">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Nutritional Score"
+                    android:textSize="12sp"
+                    android:textColor="@color/dark_gray" />
+
+                <ProgressBar
+                    android:id="@+id/progressNutritionalScore"
+                    style="?android:attr/progressBarStyleHorizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="8dp"
+                    android:layout_marginTop="4dp"
+                    android:progress="75"
+                    android:progressTint="@color/green_500"
+                    android:backgroundTint="@color/light_gray"
+                    android:progressBackgroundTint="@color/light_gray" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tvNutritionalScore"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:text="75"
+                android:textSize="28sp"
+                android:textStyle="bold"
+                android:textColor="@color/green_500" />
+        </LinearLayout>
+
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/chipGroupCategories"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="16dp"
+            android:paddingBottom="8dp"
+            app:chipSpacingHorizontal="8dp"
+            app:chipSpacingVertical="4dp">
+
+        </com.google.android.material.chip.ChipGroup>
 
         <LinearLayout
             android:id="@+id/containerComboItems"
@@ -88,6 +162,109 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:padding="16dp" />
+
+        <!-- Macro Breakdown (Expandable) -->
+        <LinearLayout
+            android:id="@+id/layoutMacroBreakdown"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp"
+            android:background="@color/gray"
+            android:visibility="gone">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Macro Breakdown"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:textColor="@color/dark_gray"
+                android:layout_marginBottom="12dp" />
+
+            <!-- Protein -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="8dp">
+
+                <TextView
+                    android:id="@+id/tvProteinPercent"
+                    android:layout_width="80dp"
+                    android:layout_height="wrap_content"
+                    android:text="Protein 25%"
+                    android:textSize="12sp"
+                    android:textColor="@color/dark_gray" />
+
+                <ProgressBar
+                    android:id="@+id/progressProtein"
+                    style="?android:attr/progressBarStyleHorizontal"
+                    android:layout_width="0dp"
+                    android:layout_height="6dp"
+                    android:layout_weight="1"
+                    android:layout_marginStart="8dp"
+                    android:progress="25"
+                    android:progressTint="@color/blue1"
+                    android:progressBackgroundTint="@color/light_gray" />
+            </LinearLayout>
+
+            <!-- Carbs -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="8dp">
+
+                <TextView
+                    android:id="@+id/tvCarbsPercent"
+                    android:layout_width="80dp"
+                    android:layout_height="wrap_content"
+                    android:text="Carbs 45%"
+                    android:textSize="12sp"
+                    android:textColor="@color/dark_gray" />
+
+                <ProgressBar
+                    android:id="@+id/progressCarbs"
+                    style="?android:attr/progressBarStyleHorizontal"
+                    android:layout_width="0dp"
+                    android:layout_height="6dp"
+                    android:layout_weight="1"
+                    android:layout_marginStart="8dp"
+                    android:progress="45"
+                    android:progressTint="@color/orange"
+                    android:progressBackgroundTint="@color/light_gray" />
+            </LinearLayout>
+
+            <!-- Fat -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:id="@+id/tvFatPercent"
+                    android:layout_width="80dp"
+                    android:layout_height="wrap_content"
+                    android:text="Fat 30%"
+                    android:textSize="12sp"
+                    android:textColor="@color/dark_gray" />
+
+                <ProgressBar
+                    android:id="@+id/progressFat"
+                    style="?android:attr/progressBarStyleHorizontal"
+                    android:layout_width="0dp"
+                    android:layout_height="6dp"
+                    android:layout_weight="1"
+                    android:layout_marginStart="8dp"
+                    android:progress="30"
+                    android:progressTint="@color/yellow"
+                    android:progressBackgroundTint="@color/light_gray" />
+            </LinearLayout>
+        </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -143,6 +320,7 @@
             </LinearLayout>
         </LinearLayout>
 
+        <!-- Action Buttons -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
