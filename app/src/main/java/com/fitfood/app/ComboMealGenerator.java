@@ -1,6 +1,5 @@
 package com.fitfood.app;
 
-import android.os.Build;
 import android.util.Log;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -32,61 +31,88 @@ public class ComboMealGenerator {
         MEAL_CALORIE_SHARE.put("Snacks", 0.10);
     }
 
+    // Meal structure roles
+    private static final String ROLE_MAIN = "Main";
+    private static final String ROLE_SIDE = "Side";
+    private static final String ROLE_DRINK_APP = "Drink/Appetizer";
+
     private static final Map<String, List<CategoryPriority>> MEAL_CATEGORY_PRIORITIES = new HashMap<>();
+    private static final Map<String, List<String>> CATEGORY_TO_ROLE = new HashMap<>();
 
     static {
+        // Role mapping
+        CATEGORY_TO_ROLE.put("Protein", Arrays.asList(ROLE_MAIN));
+        CATEGORY_TO_ROLE.put("Meat", Arrays.asList(ROLE_MAIN));
+        CATEGORY_TO_ROLE.put("Fish", Arrays.asList(ROLE_MAIN));
+        CATEGORY_TO_ROLE.put("Carbohydrate", Arrays.asList(ROLE_SIDE));
+        CATEGORY_TO_ROLE.put("Grain", Arrays.asList(ROLE_SIDE));
+        CATEGORY_TO_ROLE.put("Vegetable", Arrays.asList(ROLE_SIDE));
+        CATEGORY_TO_ROLE.put("Fruit", Arrays.asList(ROLE_DRINK_APP, ROLE_SIDE));
+        CATEGORY_TO_ROLE.put("Dairy", Arrays.asList(ROLE_DRINK_APP, ROLE_SIDE));
+        CATEGORY_TO_ROLE.put("Beverage", Arrays.asList(ROLE_DRINK_APP));
+        CATEGORY_TO_ROLE.put("Snack", Arrays.asList(ROLE_DRINK_APP));
+
+        // Category priorities per meal type
         MEAL_CATEGORY_PRIORITIES.put("Breakfast", Arrays.asList(
-                new CategoryPriority("Carbohydrate", 2, "Primary Energy"),      // Essential
-                new CategoryPriority("Protein", 2, "Sustained Fullness"),       // Essential
-                new CategoryPriority("Dairy", 1, "Calcium Boost"),              // Optional
-                new CategoryPriority("Fruit", 1, "Vitamin C"),                  // Optional
-                new CategoryPriority("Fat", 0, "Cooking Medium")                // Avoid heavy fats
+                new CategoryPriority("Carbohydrate", 2, "Primary Energy"),
+                new CategoryPriority("Protein", 2, "Sustained Fullness"),
+                new CategoryPriority("Dairy", 1, "Calcium Boost"),
+                new CategoryPriority("Fruit", 1, "Vitamin C"),
+                new CategoryPriority("Fat", 0, "Cooking Medium")
         ));
 
         MEAL_CATEGORY_PRIORITIES.put("Lunch", Arrays.asList(
-                new CategoryPriority("Carbohydrate", 2, "Energy Base"),         // Essential
-                new CategoryPriority("Protein", 2, "Muscle Maintenance"),       // Essential
-                new CategoryPriority("Vegetable", 2, "Fiber & Vitamins"),       // Highly recommended
-                new CategoryPriority("Fat", 1, "Satiety"),                      // Moderate
-                new CategoryPriority("Fruit", 1, "Digestion")                   // Optional dessert
+                new CategoryPriority("Carbohydrate", 2, "Energy Base"),
+                new CategoryPriority("Protein", 2, "Muscle Maintenance"),
+                new CategoryPriority("Vegetable", 2, "Fiber & Vitamins"),
+                new CategoryPriority("Fat", 1, "Satiety"),
+                new CategoryPriority("Fruit", 1, "Digestion")
         ));
 
         MEAL_CATEGORY_PRIORITIES.put("Dinner", Arrays.asList(
-                new CategoryPriority("Protein", 2, "Overnight Repair"),         // Essential
-                new CategoryPriority("Vegetable", 2, "Fiber & Low Cal"),        // Essential
-                new CategoryPriority("Carbohydrate", 1, "Light Energy"),        // Reduced carbs
-                new CategoryPriority("Fat", 1, "Essential Fatty Acids"),        // Moderate
-                new CategoryPriority("Fruit", 0, "Optional")                    // Avoid (sugar before sleep)
+                new CategoryPriority("Protein", 2, "Overnight Repair"),
+                new CategoryPriority("Vegetable", 2, "Fiber & Low Cal"),
+                new CategoryPriority("Carbohydrate", 1, "Light Energy"),
+                new CategoryPriority("Fat", 1, "Essential Fatty Acids"),
+                new CategoryPriority("Fruit", 0, "Optional")
         ));
 
         MEAL_CATEGORY_PRIORITIES.put("Snacks", Arrays.asList(
-                new CategoryPriority("Fruit", 2, "Natural Sweetness"),          // Preferred
-                new CategoryPriority("Protein", 2, "Satiety"),                  // Good option
-                new CategoryPriority("Dairy", 1, "Calcium Snack"),              // Moderate
-                new CategoryPriority("Carbohydrate", 1, "Quick Energy"),        // Controlled
-                new CategoryPriority("Fat", 0, "Avoid heavy")                   // Minimize
+                new CategoryPriority("Fruit", 2, "Natural Sweetness"),
+                new CategoryPriority("Protein", 2, "Satiety"),
+                new CategoryPriority("Dairy", 1, "Calcium Snack"),
+                new CategoryPriority("Carbohydrate", 1, "Quick Energy"),
+                new CategoryPriority("Fat", 0, "Avoid heavy")
         ));
     }
 
+    // Expanded incompatible pairs
     private static final Map<String, Set<String>> INCOMPATIBLE_PAIRS = new HashMap<>();
     static {
-        INCOMPATIBLE_PAIRS.put("Dessert", new HashSet<>(Arrays.asList("Beef", "Pork", "Fish")));
+        Set<String> soupIncompatible = new HashSet<>(Arrays.asList("Cereal", "Granola", "Oatmeal"));
+        INCOMPATIBLE_PAIRS.put("Soup", soupIncompatible);
+        INCOMPATIBLE_PAIRS.put("Dessert", new HashSet<>(Arrays.asList("Beef Steak", "Pork Adobo", "Fried Fish")));
         INCOMPATIBLE_PAIRS.put("Heavy Meat", new HashSet<>(List.of("Clear Soup")));
+        INCOMPATIBLE_PAIRS.put("Ice Cream", new HashSet<>(Arrays.asList("Fried Chicken", "Pizza")));
+        INCOMPATIBLE_PAIRS.put("Fish", new HashSet<>(Arrays.asList("Yogurt", "Buttermilk")));
     }
 
+    // Expanded synergy pairs (culinary compatible)
     private static final Map<String, Set<String>> SYNERGY_PAIRS = new HashMap<>();
     static {
-        SYNERGY_PAIRS.put("Rice", new HashSet<>(Arrays.asList("Chicken", "Beef", "Pork", "Fish", "Egg")));
-        SYNERGY_PAIRS.put("Bread", new HashSet<>(Arrays.asList("Egg", "Cheese", "Chicken")));
-        SYNERGY_PAIRS.put("Noodles", new HashSet<>(Arrays.asList("Beef", "Pork", "Egg", "Vegetables")));
+        SYNERGY_PAIRS.put("Rice", new HashSet<>(Arrays.asList("Chicken", "Beef", "Pork", "Fish", "Egg", "Vegetables")));
+        SYNERGY_PAIRS.put("Bread", new HashSet<>(Arrays.asList("Egg", "Cheese", "Chicken", "Butter")));
+        SYNERGY_PAIRS.put("Noodles", new HashSet<>(Arrays.asList("Beef", "Pork", "Egg", "Vegetables", "Shrimp")));
+        SYNERGY_PAIRS.put("Pasta", new HashSet<>(Arrays.asList("Tomato Sauce", "Parmesan", "Meatballs")));
+        SYNERGY_PAIRS.put("Salad", new HashSet<>(Arrays.asList("Grilled Chicken", "Tuna", "Egg", "Olive Oil")));
     }
 
     private static final Random random = new Random();
+
     private static class CategoryPriority {
         final String category;
         final int priority;
         final String reason;
-
         CategoryPriority(String category, int priority, String reason) {
             this.category = category;
             this.priority = priority;
@@ -101,7 +127,6 @@ public class ComboMealGenerator {
         final double synergyScore;
         final double calorieScore;
         final double totalScore;
-
         ScoredCombo(ComboMeal combo, double nutritionalScore, double varietyScore,
                     double synergyScore, double calorieScore) {
             this.combo = combo;
@@ -135,24 +160,19 @@ public class ComboMealGenerator {
                                                  List<String> recentCombos) {
 
         if (availableFoods == null || availableFoods.size() < MIN_ITEMS) {
-            Log.w("ComboGenerator", "Insufficient foods available: " +
-                    (availableFoods == null ? "null" : availableFoods.size()));
+            Log.w("ComboGenerator", "Insufficient foods available");
             return createFallbackCombo(availableFoods);
         }
 
         List<FoodItem> compatibleFoods = filterByMealType(availableFoods, mealType);
         if (compatibleFoods.size() < MIN_ITEMS) {
-            Log.w("ComboGenerator", "Insufficient compatible foods for " + mealType);
             compatibleFoods = new ArrayList<>(availableFoods);
         }
 
-        double mealCalorieShare = 0;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            mealCalorieShare = MEAL_CALORIE_SHARE.getOrDefault(mealType, 0.25);
-        }
+        double mealCalorieShare = getOrDefault(MEAL_CALORIE_SHARE, mealType, 0.25);
         double targetMealCalories = dailyCalorieTarget * mealCalorieShare;
-
         targetMealCalories = adjustForGoal(targetMealCalories, userGoal, mealType);
+
         List<ScoredCombo> candidates = new ArrayList<>();
         Set<String> attemptedSignatures = new HashSet<>();
 
@@ -161,17 +181,14 @@ public class ComboMealGenerator {
 
             if (combo != null && combo.isValid()) {
                 String signature = getComboSignature(combo);
-
                 if (!attemptedSignatures.contains(signature) &&
                         (recentCombos == null || !recentCombos.contains(signature))) {
 
                     attemptedSignatures.add(signature);
-
                     double nutScore = calculateNutritionalScore(combo, targetMealCalories);
                     double varScore = calculateVarietyScore(combo);
                     double synScore = calculateSynergyScore(combo);
                     double calScore = calculateCalorieScore(combo, targetMealCalories);
-
                     candidates.add(new ScoredCombo(combo, nutScore, varScore, synScore, calScore));
                 }
             }
@@ -182,12 +199,6 @@ public class ComboMealGenerator {
         }
 
         Collections.sort(candidates, (a, b) -> Double.compare(b.totalScore, a.totalScore));
-        Log.d("ComboGenerator", "Top combo score: " + candidates.get(0).totalScore +
-                " (nut=" + candidates.get(0).nutritionalScore +
-                ", var=" + candidates.get(0).varietyScore +
-                ", syn=" + candidates.get(0).synergyScore +
-                ", cal=" + candidates.get(0).calorieScore + ")");
-
         return candidates.get(0).combo;
     }
 
@@ -200,45 +211,52 @@ public class ComboMealGenerator {
         combo.setMealType(mealType);
         combo.setGenerationStrategy("intelligent_scored");
 
-        List<CategoryPriority> priorities = null;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            priorities = MEAL_CATEGORY_PRIORITIES.getOrDefault(
-                    mealType, MEAL_CATEGORY_PRIORITIES.get("Lunch"));
-        }
+        List<CategoryPriority> priorities = getOrDefault(MEAL_CATEGORY_PRIORITIES, mealType,
+                MEAL_CATEGORY_PRIORITIES.get("Lunch"));
 
         Map<String, List<FoodItem>> foodsByCategory = groupByCategory(foods);
         Set<String> selectedCategories = new HashSet<>();
         Set<String> selectedFoodIds = new HashSet<>();
+        Map<String, String> roleAssigned = new HashMap<>(); // role -> foodId
 
-        assert priorities != null;
-        for (CategoryPriority cp : priorities) {
-            if (cp.priority >= 2 && combo.getItems().size() < MAX_ITEMS) {
-                FoodItem selected = selectBestFromCategory(
-                        foodsByCategory.get(cp.category),
-                        targetCalories,
-                        combo,
-                        selectedFoodIds
-                );
+        // 1. Enforce structure: Main + Side + optional Drink/App
+        // First select a Main (Protein, Meat, Fish)
+        FoodItem mainItem = selectBestFromRole(foodsByCategory, Arrays.asList("Protein", "Meat", "Fish"),
+                targetCalories, combo, selectedFoodIds);
+        if (mainItem != null) {
+            addToComboWithPortion(combo, mainItem, userGoal, targetCalories);
+            selectedCategories.add(mainItem.getCategory());
+            selectedFoodIds.add(mainItem.getId());
+            roleAssigned.put(ROLE_MAIN, mainItem.getId());
+        }
 
-                if (selected != null) {
-                    addToComboWithPortion(combo, selected, userGoal, targetCalories);
-                    selectedCategories.add(cp.category);
-                    selectedFoodIds.add(selected.getId());
-                }
+        // Then select a Side (Carbohydrate, Grain, Vegetable)
+        FoodItem sideItem = selectBestFromRole(foodsByCategory, Arrays.asList("Carbohydrate", "Grain", "Vegetable"),
+                targetCalories, combo, selectedFoodIds);
+        if (sideItem != null) {
+            addToComboWithPortion(combo, sideItem, userGoal, targetCalories);
+            selectedCategories.add(sideItem.getCategory());
+            selectedFoodIds.add(sideItem.getId());
+            roleAssigned.put(ROLE_SIDE, sideItem.getId());
+        }
+
+        // Optionally add a Drink/Appetizer (Fruit, Dairy, Beverage, Snack) if calories allow
+        if (combo.getTotalCalories() < targetCalories * 0.85 && combo.getItems().size() < MAX_ITEMS) {
+            FoodItem drinkApp = selectBestFromRole(foodsByCategory,
+                    Arrays.asList("Fruit", "Dairy", "Beverage", "Snack"),
+                    targetCalories, combo, selectedFoodIds);
+            if (drinkApp != null) {
+                addToComboWithPortion(combo, drinkApp, userGoal, targetCalories);
+                selectedCategories.add(drinkApp.getCategory());
+                selectedFoodIds.add(drinkApp.getId());
+                roleAssigned.put(ROLE_DRINK_APP, drinkApp.getId());
             }
         }
 
-        List<CategoryPriority> optionalPriorities = new ArrayList<>();
+        // Fill remaining slots with high-priority categories if needed
         for (CategoryPriority cp : priorities) {
-            if (cp.priority == 1 && !selectedCategories.contains(cp.category)) {
-                optionalPriorities.add(cp);
-            }
-        }
-        Collections.shuffle(optionalPriorities);
-
-        for (CategoryPriority cp : optionalPriorities) {
             if (combo.getItems().size() >= MAX_ITEMS) break;
-            if (combo.getItems().size() >= MIN_ITEMS && random.nextDouble() > 0.7) continue;
+            if (selectedCategories.contains(cp.category)) continue;
 
             FoodItem selected = selectBestFromCategory(
                     foodsByCategory.get(cp.category),
@@ -246,7 +264,6 @@ public class ComboMealGenerator {
                     combo,
                     selectedFoodIds
             );
-
             if (selected != null) {
                 addToComboWithPortion(combo, selected, userGoal, targetCalories);
                 selectedCategories.add(cp.category);
@@ -254,6 +271,7 @@ public class ComboMealGenerator {
             }
         }
 
+        // Ensure minimum items
         while (combo.getItems().size() < MIN_ITEMS) {
             FoodItem filler = selectRandomCompatible(foods, selectedFoodIds, combo);
             if (filler == null) break;
@@ -265,23 +283,25 @@ public class ComboMealGenerator {
 
         combo.recalculateTotals();
         generateIntelligentName(combo, selectedCategories);
-
         return combo;
     }
 
-    private static FoodItem selectBestFromCategory(List<FoodItem> categoryFoods,
-                                                   double targetCalories,
-                                                   ComboMeal currentCombo,
-                                                   Set<String> excludeIds) {
-        if (categoryFoods == null || categoryFoods.isEmpty()) return null;
-
+    private static FoodItem selectBestFromRole(Map<String, List<FoodItem>> foodsByCategory,
+                                               List<String> allowedCategories,
+                                               double targetCalories,
+                                               ComboMeal currentCombo,
+                                               Set<String> excludeIds) {
         List<FoodItem> candidates = new ArrayList<>();
-        for (FoodItem food : categoryFoods) {
-            if (excludeIds.contains(food.getId())) continue;
-            if (!isCompatibleWithCombo(food, currentCombo)) continue;
-            candidates.add(food);
+        for (String cat : allowedCategories) {
+            List<FoodItem> catFoods = foodsByCategory.get(cat);
+            if (catFoods != null) {
+                for (FoodItem food : catFoods) {
+                    if (!excludeIds.contains(food.getId()) && isCompatibleWithCombo(food, currentCombo)) {
+                        candidates.add(food);
+                    }
+                }
+            }
         }
-
         if (candidates.isEmpty()) return null;
 
         double currentCalories = currentCombo.getTotalCalories();
@@ -292,17 +312,42 @@ public class ComboMealGenerator {
         for (FoodItem food : candidates) {
             double foodCalories = estimateComboItemCalories(food);
             double score = Math.abs(foodCalories - (remaining / (MAX_ITEMS - currentCombo.getItems().size())));
-
-            if (food.getImage() != null && !food.getImage().isEmpty()) {
-                score *= 0.9;
-            }
-
+            if (food.getImage() != null && !food.getImage().isEmpty()) score *= 0.9;
             if (score < bestScore) {
                 bestScore = score;
                 bestMatch = food;
             }
         }
+        return bestMatch != null ? bestMatch : candidates.get(random.nextInt(candidates.size()));
+    }
 
+    private static FoodItem selectBestFromCategory(List<FoodItem> categoryFoods,
+                                                   double targetCalories,
+                                                   ComboMeal currentCombo,
+                                                   Set<String> excludeIds) {
+        if (categoryFoods == null || categoryFoods.isEmpty()) return null;
+        List<FoodItem> candidates = new ArrayList<>();
+        for (FoodItem food : categoryFoods) {
+            if (!excludeIds.contains(food.getId()) && isCompatibleWithCombo(food, currentCombo)) {
+                candidates.add(food);
+            }
+        }
+        if (candidates.isEmpty()) return null;
+
+        double currentCalories = currentCombo.getTotalCalories();
+        double remaining = targetCalories - currentCalories;
+        FoodItem bestMatch = null;
+        double bestScore = Double.MAX_VALUE;
+
+        for (FoodItem food : candidates) {
+            double foodCalories = estimateComboItemCalories(food);
+            double score = Math.abs(foodCalories - (remaining / (MAX_ITEMS - currentCombo.getItems().size())));
+            if (food.getImage() != null && !food.getImage().isEmpty()) score *= 0.9;
+            if (score < bestScore) {
+                bestScore = score;
+                bestMatch = food;
+            }
+        }
         return bestMatch != null ? bestMatch : candidates.get(random.nextInt(candidates.size()));
     }
 
@@ -310,31 +355,24 @@ public class ComboMealGenerator {
         for (ComboMeal.ComboItem item : combo.getItems()) {
             FoodItem existing = item.getFoodItem();
             Set<String> banned = INCOMPATIBLE_PAIRS.get(existing.getCategory());
-
             if (banned != null && banned.contains(food.getName())) return false;
             banned = INCOMPATIBLE_PAIRS.get(food.getCategory());
             if (banned != null && banned.contains(existing.getName())) return false;
         }
-
         return true;
     }
 
     private static double calculateNutritionalScore(ComboMeal combo, double targetCalories) {
         Set<String> categories = new HashSet<>();
-        boolean hasProtein = false;
-        boolean hasCarbs = false;
-        boolean hasVeggie = false;
-
+        boolean hasProtein = false, hasCarbs = false, hasVeggie = false;
         for (ComboMeal.ComboItem item : combo.getItems()) {
             FoodItem food = item.getFoodItem();
             String cat = food.getCategory();
             categories.add(cat);
-
             if ("Protein".equals(cat) || "Meat".equals(cat) || "Fish".equals(cat)) hasProtein = true;
             if ("Carbohydrate".equals(cat) || "Grain".equals(cat) || "Rice".equals(cat)) hasCarbs = true;
             if ("Vegetable".equals(cat)) hasVeggie = true;
         }
-
         double score = categories.size() * 15;
         if (hasProtein) score += 20;
         if (hasCarbs) score += 15;
@@ -343,27 +381,22 @@ public class ComboMealGenerator {
         Map<String, Integer> categoryCounts = new HashMap<>();
         for (ComboMeal.ComboItem item : combo.getItems()) {
             String cat = item.getFoodItem().getCategory();
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                categoryCounts.put(cat, categoryCounts.getOrDefault(cat, 0) + 1);
-            }
+            categoryCounts.put(cat, categoryCounts.getOrDefault(cat, 0) + 1);
         }
         for (int count : categoryCounts.values()) {
             if (count > 1) score -= (count - 1) * 10;
         }
-
         return Math.min(100, Math.max(0, score));
     }
 
     private static double calculateVarietyScore(ComboMeal combo) {
         Set<String> uniqueNames = new HashSet<>();
         int hasImageCount = 0;
-
         for (ComboMeal.ComboItem item : combo.getItems()) {
             FoodItem food = item.getFoodItem();
             uniqueNames.add(food.getName());
             if (food.getImage() != null && !food.getImage().isEmpty()) hasImageCount++;
         }
-
         double score = uniqueNames.size() * 25;
         score += (hasImageCount * 5);
         return Math.min(100, score);
@@ -372,36 +405,27 @@ public class ComboMealGenerator {
     private static double calculateSynergyScore(ComboMeal combo) {
         List<ComboMeal.ComboItem> items = combo.getItems();
         if (items.size() < 2) return 0;
-
         int synergyCount = 0;
         int totalPairs = 0;
-
         for (int i = 0; i < items.size(); i++) {
             for (int j = i + 1; j < items.size(); j++) {
                 String name1 = items.get(i).getFoodItem().getName();
                 String name2 = items.get(j).getFoodItem().getName();
                 totalPairs++;
                 Set<String> synergies = SYNERGY_PAIRS.get(name1);
-
-                if (synergies != null && synergies.contains(name2)) {
-                    synergyCount++;
-                    continue;
-                }
-
-                synergies = SYNERGY_PAIRS.get(name2);
-                if (synergies != null && synergies.contains(name1)) {
-                    synergyCount++;
+                if (synergies != null && synergies.contains(name2)) synergyCount++;
+                else {
+                    synergies = SYNERGY_PAIRS.get(name2);
+                    if (synergies != null && synergies.contains(name1)) synergyCount++;
                 }
             }
         }
-
         return totalPairs > 0 ? (synergyCount * 100.0 / totalPairs) : 50;
     }
 
     private static double calculateCalorieScore(ComboMeal combo, double targetCalories) {
         double actualCalories = combo.getTotalCalories();
         double ratio = actualCalories / targetCalories;
-
         if (ratio >= 0.9 && ratio <= 1.1) return 100;
         if (ratio >= 0.8 && ratio < 0.9) return 80;
         if (ratio > 1.1 && ratio <= 1.2) return 70;
@@ -411,16 +435,12 @@ public class ComboMealGenerator {
 
     private static double adjustForGoal(double baseCalories, String userGoal, String mealType) {
         double adjusted = baseCalories;
-
         if ("weight_loss".equals(userGoal)) {
             if ("Dinner".equals(mealType)) adjusted *= 0.90;
             else adjusted *= 0.95;
         } else if ("weight_gain".equals(userGoal)) {
             adjusted *= 1.10;
-        } else if ("maintenance".equals(userGoal)) {
-            adjusted *= 1.0;
         }
-
         double minCalories = mealType.equals("Snacks") ? 100 : 300;
         return Math.max(minCalories, adjusted);
     }
@@ -436,10 +456,8 @@ public class ComboMealGenerator {
             portionGrams = (remainingCalories * 0.5) / (food.getKcal() / food.getGrams());
         }
 
-        if ("weight_loss".equals(userGoal)) {
-            if ("Carbohydrate".equals(food.getCategory())) {
-                portionGrams *= 0.85;
-            }
+        if ("weight_loss".equals(userGoal) && "Carbohydrate".equals(food.getCategory())) {
+            portionGrams *= 0.85;
         } else if ("weight_gain".equals(userGoal)) {
             portionGrams *= 1.15;
         }
@@ -455,11 +473,9 @@ public class ComboMealGenerator {
             combo.setDisplayName("Simple Combo");
             return;
         }
-
         StringBuilder nameBuilder = new StringBuilder();
         boolean hasRice = false, hasEgg = false, hasMeat = false;
         String meatType = "";
-
         for (ComboMeal.ComboItem item : items) {
             String name = item.getFoodItem().getName().toLowerCase();
             if (name.contains("rice")) hasRice = true;
@@ -470,7 +486,6 @@ public class ComboMealGenerator {
                 meatType = extractMeatType(name);
             }
         }
-
         if (hasRice && hasEgg && hasMeat) {
             nameBuilder.append(meatType).append("silog");
         } else if (hasRice && hasMeat) {
@@ -480,7 +495,6 @@ public class ComboMealGenerator {
         } else if (categories.contains("Carbohydrate") && categories.contains("Protein")) {
             nameBuilder.append("Energy Meal");
         } else {
-
             int count = Math.min(2, items.size());
             for (int i = 0; i < count; i++) {
                 if (i > 0) nameBuilder.append(" & ");
@@ -489,7 +503,6 @@ public class ComboMealGenerator {
             }
             nameBuilder.append(" Combo");
         }
-
         combo.setDisplayName(nameBuilder.toString());
     }
 
@@ -527,9 +540,7 @@ public class ComboMealGenerator {
         for (FoodItem food : foods) {
             String category = food.getCategory();
             if (category == null || category.isEmpty()) category = "Uncategorized";
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                grouped.computeIfAbsent(category, k -> new ArrayList<>()).add(food);
-            }
+            grouped.computeIfAbsent(category, k -> new ArrayList<>()).add(food);
         }
         return grouped;
     }
@@ -563,17 +574,14 @@ public class ComboMealGenerator {
 
     private static ComboMeal createFallbackCombo(List<FoodItem> foods) {
         if (foods == null || foods.size() < MIN_ITEMS) return null;
-
         ComboMeal combo = new ComboMeal();
         combo.setMealType("General");
         combo.setGenerationStrategy("fallback");
-
         for (int i = 0; i < Math.min(MAX_ITEMS, foods.size()); i++) {
             FoodItem food = foods.get(i);
             double portion = food.getSuggestedGrams() > 0 ? food.getSuggestedGrams() : food.getGrams();
             combo.addItem(new ComboMeal.ComboItem(food, portion));
         }
-
         combo.setDisplayName("Simple " + combo.getItems().size() + "-Item Combo");
         return combo;
     }
@@ -585,21 +593,18 @@ public class ComboMealGenerator {
         if (previousCombo == null || previousCombo.getItems().isEmpty()) {
             return generateCombo(availableFoods, mealType, userGoal);
         }
-
         List<String> excludeIds = new ArrayList<>();
         for (ComboMeal.ComboItem item : previousCombo.getItems()) {
             if (item.getFoodItem() != null && item.getFoodItem().getId() != null) {
                 excludeIds.add(item.getFoodItem().getId());
             }
         }
-
         List<FoodItem> filteredFoods = new ArrayList<>();
         for (FoodItem food : availableFoods) {
             if (food.getId() == null || !excludeIds.contains(food.getId())) {
                 filteredFoods.add(food);
             }
         }
-
         if (filteredFoods.size() < MIN_ITEMS) {
             for (FoodItem food : availableFoods) {
                 if (!filteredFoods.contains(food) && filteredFoods.size() < MAX_ITEMS + 2) {
@@ -607,7 +612,6 @@ public class ComboMealGenerator {
                 }
             }
         }
-
         return generateCombo(filteredFoods, mealType, userGoal);
     }
 
@@ -617,7 +621,6 @@ public class ComboMealGenerator {
                                                        int count) {
         List<ComboMeal> options = new ArrayList<>();
         Set<String> signatures = new HashSet<>();
-
         int attempts = 0;
         while (options.size() < count && attempts < count * 3) {
             ComboMeal combo = generateCombo(availableFoods, mealType, userGoal);
@@ -630,7 +633,12 @@ public class ComboMealGenerator {
             }
             attempts++;
         }
-
         return options;
+    }
+
+    // Safe getOrDefault for older APIs
+    private static <K, V> V getOrDefault(Map<K, V> map, K key, V defaultValue) {
+        V v = map.get(key);
+        return v != null ? v : defaultValue;
     }
 }

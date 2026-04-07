@@ -27,9 +27,7 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
-
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -46,8 +44,6 @@ public class AdminFoodActivity extends AppCompatActivity implements AdminFoodAda
     private TextView tvEmpty;
     private EditText pendingUrlInput;
     private Uri tempImageUri;
-
-    // Executor for background tasks to prevent ANR
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
     private final Handler mainHandler = new Handler(Looper.getMainLooper());
 
@@ -63,32 +59,23 @@ public class AdminFoodActivity extends AppCompatActivity implements AdminFoodAda
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_admin_food);
-
         db = FirebaseFirestore.getInstance();
         foodList = new ArrayList<>();
         foodListFull = new ArrayList<>();
         tvEmpty = findViewById(R.id.tvEmptyFood);
-
         RecyclerView recyclerView = findViewById(R.id.rvAdminFoods);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-
         adapter = new AdminFoodAdapter(this, foodList, this);
         recyclerView.setAdapter(adapter);
-
         ImageButton btnBack = findViewById(R.id.btnBack);
         btnBack.setOnClickListener(v -> finish());
-
         FloatingActionButton fabAdd = findViewById(R.id.fabAddFood);
         fabAdd.setOnClickListener(v -> showFoodDialog(null));
-
         loadFoodsRealtime();
-
         EditText etSearch = findViewById(R.id.etSearchFood);
         etSearch.addTextChangedListener(new android.text.TextWatcher() {
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                filterFoods(s.toString());
-            }
+            public void onTextChanged(CharSequence s, int start, int before, int count) { filterFoods(s.toString()); }
             public void afterTextChanged(android.text.Editable s) {}
         });
     }
@@ -104,9 +91,7 @@ public class AdminFoodActivity extends AppCompatActivity implements AdminFoodAda
                 String category = item.getCategory();
                 boolean nameMatches = name != null && name.toLowerCase().contains(lowerQuery);
                 boolean categoryMatches = category != null && category.toLowerCase().contains(lowerQuery);
-                if (nameMatches || categoryMatches) {
-                    foodList.add(item);
-                }
+                if (nameMatches || categoryMatches) foodList.add(item);
             }
         }
         adapter.notifyDataSetChanged();
@@ -119,10 +104,8 @@ public class AdminFoodActivity extends AppCompatActivity implements AdminFoodAda
                 Toast.makeText(this, "Sync Error: " + error.getMessage(), Toast.LENGTH_SHORT).show();
                 return;
             }
-
             foodList.clear();
             foodListFull.clear();
-
             if (value != null) {
                 for (QueryDocumentSnapshot doc : value) {
                     try {
@@ -130,28 +113,18 @@ public class AdminFoodActivity extends AppCompatActivity implements AdminFoodAda
                         food.setId(doc.getId());
                         foodList.add(food);
                         foodListFull.add(food);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
+                    } catch (Exception e) { e.printStackTrace(); }
                 }
             }
-
             EditText etSearch = findViewById(R.id.etSearchFood);
-            if (etSearch.getText().length() > 0) {
-                filterFoods(etSearch.getText().toString());
-            } else {
-                adapter.notifyDataSetChanged();
-            }
-
+            if (etSearch.getText().length() > 0) filterFoods(etSearch.getText().toString());
+            else adapter.notifyDataSetChanged();
             tvEmpty.setVisibility(foodList.isEmpty() ? View.VISIBLE : View.GONE);
         });
     }
 
     @Override
-    public void onEdit(FoodItem food) {
-        showFoodDialog(food);
-    }
-
+    public void onEdit(FoodItem food) { showFoodDialog(food); }
     @Override
     public void onDelete(FoodItem food) {
         new AlertDialog.Builder(this)
@@ -170,37 +143,36 @@ public class AdminFoodActivity extends AppCompatActivity implements AdminFoodAda
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         View view = LayoutInflater.from(this).inflate(R.layout.dialog_manage_food, null);
         builder.setView(view);
-
         EditText etName = view.findViewById(R.id.etFoodName);
         EditText etDesc = view.findViewById(R.id.etFoodDesc);
         EditText etKcal = view.findViewById(R.id.etFoodKcal);
         EditText etGrams = view.findViewById(R.id.etFoodGrams);
+        EditText etProtein = view.findViewById(R.id.etFoodProtein);
+        EditText etCarbs = view.findViewById(R.id.etFoodCarbs);
+        EditText etFat = view.findViewById(R.id.etFoodFat);
         EditText etIngredients = view.findViewById(R.id.etFoodIngredients);
         Spinner spCategory = view.findViewById(R.id.spFoodCategory);
         EditText etImage = view.findViewById(R.id.etFoodImage);
-
         ImageView imgPreview = view.findViewById(R.id.imgPreview);
         View btnSelectImageWrapper = view.findViewById(R.id.btnSelectImageWrapper);
         TextView tvTapToUpload = view.findViewById(R.id.tvTapToUpload);
-
         CheckBox cbBreak = view.findViewById(R.id.cbBreakfast);
         CheckBox cbLunch = view.findViewById(R.id.cbLunch);
         CheckBox cbDinner = view.findViewById(R.id.cbDinner);
         CheckBox cbSnack = view.findViewById(R.id.cbSnack);
         Button btnSave = view.findViewById(R.id.btnSaveFood);
-
         pendingUrlInput = etImage;
-
         if (foodToEdit != null) {
             etName.setText(foodToEdit.getName());
             etDesc.setText(foodToEdit.getDescription());
-            etKcal.setText(String.valueOf(foodToEdit.getCalories()));
+            etKcal.setText(String.valueOf(foodToEdit.getKcal()));
             etGrams.setText(String.valueOf(foodToEdit.getGrams()));
+            etProtein.setText(String.valueOf(foodToEdit.getProtein()));
+            etCarbs.setText(String.valueOf(foodToEdit.getCarbs()));
+            etFat.setText(String.valueOf(foodToEdit.getFat()));
             etIngredients.setText(foodToEdit.getIngredients());
             etImage.setText(foodToEdit.getImage());
-
             displayImageForDialog(foodToEdit.getImage(), imgPreview, tvTapToUpload);
-
             String[] cats = getResources().getStringArray(R.array.food_categories);
             for(int i=0; i<cats.length; i++) {
                 if(cats[i].equalsIgnoreCase(foodToEdit.getCategory())) spCategory.setSelection(i);
@@ -215,7 +187,6 @@ public class AdminFoodActivity extends AppCompatActivity implements AdminFoodAda
             }
             btnSave.setText("Update Food");
         }
-
         etImage.addTextChangedListener(new android.text.TextWatcher() {
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
             public void onTextChanged(CharSequence s, int start, int before, int count) {
@@ -223,41 +194,42 @@ public class AdminFoodActivity extends AppCompatActivity implements AdminFoodAda
             }
             public void afterTextChanged(android.text.Editable s) {}
         });
-
         btnSelectImageWrapper.setOnClickListener(v -> {
-            Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+            Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
             pickImageLauncher.launch(intent);
         });
-
         AlertDialog dialog = builder.create();
         btnSave.setOnClickListener(v -> {
             String name = etName.getText().toString().trim();
             String desc = etDesc.getText().toString().trim();
             String kcalStr = etKcal.getText().toString().trim();
             String gramsStr = etGrams.getText().toString().trim();
+            String proteinStr = etProtein.getText().toString().trim();
+            String carbsStr = etCarbs.getText().toString().trim();
+            String fatStr = etFat.getText().toString().trim();
             String image = etImage.getText().toString().trim();
             String ingredients = etIngredients.getText().toString().trim();
             String category = spCategory.getSelectedItem().toString();
-
             if (name.isEmpty() || kcalStr.isEmpty() || gramsStr.isEmpty()) {
                 Toast.makeText(this, "Fill required fields", Toast.LENGTH_SHORT).show();
                 return;
             }
-
             List<String> mealTypes = new ArrayList<>();
             if(cbBreak.isChecked()) mealTypes.add("Breakfast");
             if(cbLunch.isChecked()) mealTypes.add("Lunch");
             if(cbDinner.isChecked()) mealTypes.add("Dinner");
             if(cbSnack.isChecked()) mealTypes.add("Snacks");
-
             if(mealTypes.isEmpty()) {
                 Toast.makeText(this, "Select at least one meal type", Toast.LENGTH_SHORT).show();
                 return;
             }
-
-            FoodItem newFood = new FoodItem(name, Double.parseDouble(gramsStr), Double.parseDouble(kcalStr),
+            double kcal = Double.parseDouble(kcalStr);
+            double grams = Double.parseDouble(gramsStr);
+            double protein = proteinStr.isEmpty() ? 0 : Double.parseDouble(proteinStr);
+            double carbs = carbsStr.isEmpty() ? 0 : Double.parseDouble(carbsStr);
+            double fat = fatStr.isEmpty() ? 0 : Double.parseDouble(fatStr);
+            FoodItem newFood = new FoodItem(name, grams, kcal, protein, carbs, fat,
                     category, image, desc, mealTypes, 0, ingredients);
-
             if (foodToEdit == null) {
                 db.collection("foods_v2").add(newFood)
                         .addOnSuccessListener(doc -> {
@@ -280,26 +252,20 @@ public class AdminFoodActivity extends AppCompatActivity implements AdminFoodAda
                 .setTitle("Confirm Image Upload")
                 .setMessage("Do you want to upload and use this image?")
                 .setPositiveButton("Use Image", (dialog, which) -> {
-                    // Changed: Calls uploadImageToFirebase instead of processImageToBase64
                     if (tempImageUri != null) uploadImageToFirebase(tempImageUri);
                 })
                 .setNegativeButton("Cancel", (dialog, which) -> tempImageUri = null)
                 .show();
     }
 
-    // UPDATED: Uploads to Firebase Storage in Background to prevent ANR
     private void uploadImageToFirebase(Uri imageUri) {
         if (pendingUrlInput == null || imageUri == null) return;
-
         ProgressDialog pd = new ProgressDialog(this);
         pd.setMessage("Compressing & Uploading...");
         pd.setCancelable(false);
         pd.show();
-
-        // 1. Move heavy compression to Background Thread
         executor.execute(() -> {
             try {
-                // Resize and compress
                 Bitmap bitmap = decodeSampledBitmapFromUri(imageUri);
                 if (bitmap == null) {
                     mainHandler.post(() -> {
@@ -308,26 +274,19 @@ public class AdminFoodActivity extends AppCompatActivity implements AdminFoodAda
                     });
                     return;
                 }
-
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                // Compress to JPEG, Quality 70% to save space
                 bitmap.compress(Bitmap.CompressFormat.JPEG, 70, baos);
                 byte[] data = baos.toByteArray();
-                bitmap.recycle(); // Free memory
-
-                // 2. Switch back to Main Thread for Firebase SDK calls
+                bitmap.recycle();
                 mainHandler.post(() -> {
                     String filename = UUID.randomUUID().toString() + ".jpg";
                     StorageReference storageRef = FirebaseStorage.getInstance().getReference()
                             .child("food_images")
                             .child(filename);
-
                     UploadTask uploadTask = storageRef.putBytes(data);
                     uploadTask.addOnSuccessListener(taskSnapshot -> {
-                        // Get the download URL
                         storageRef.getDownloadUrl().addOnSuccessListener(uri -> {
                             pd.dismiss();
-                            // 3. Put URL into the EditText so it saves with the food item
                             pendingUrlInput.setText(uri.toString());
                             Toast.makeText(AdminFoodActivity.this, "Image Uploaded!", Toast.LENGTH_SHORT).show();
                         });
@@ -336,7 +295,6 @@ public class AdminFoodActivity extends AppCompatActivity implements AdminFoodAda
                         Toast.makeText(AdminFoodActivity.this, "Upload failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                     });
                 });
-
             } catch (Exception e) {
                 e.printStackTrace();
                 mainHandler.post(() -> {
@@ -347,20 +305,14 @@ public class AdminFoodActivity extends AppCompatActivity implements AdminFoodAda
         });
     }
 
-    // Helper to load bitmap efficiently (prevents OutOfMemoryError before compression)
     private Bitmap decodeSampledBitmapFromUri(Uri fileUri) {
         try {
-            // First decode with inJustDecodeBounds=true to check dimensions
             BitmapFactory.Options options = new BitmapFactory.Options();
             options.inJustDecodeBounds = true;
             InputStream stream = getContentResolver().openInputStream(fileUri);
             BitmapFactory.decodeStream(stream, null, options);
             if (stream != null) stream.close();
-
-            // Calculate inSampleSize
             options.inSampleSize = calculateInSampleSize(options);
-
-            // Decode bitmap with inSampleSize set
             options.inJustDecodeBounds = false;
             InputStream finalStream = getContentResolver().openInputStream(fileUri);
             Bitmap bitmap = BitmapFactory.decodeStream(finalStream, null, options);
@@ -373,13 +325,9 @@ public class AdminFoodActivity extends AppCompatActivity implements AdminFoodAda
     }
 
     private int calculateInSampleSize(BitmapFactory.Options options) {
-        // Raw height and width of image
         final int height = options.outHeight;
         final int width = options.outWidth;
         int inSampleSize = 1;
-
-        // Calculate the largest inSampleSize value that is a power of 2 and keeps both
-        // height and width larger than the requested height and width (approx 800px here).
         if (height > 800 || width > 800) {
             final int halfHeight = height / 2;
             final int halfWidth = width / 2;
@@ -395,49 +343,14 @@ public class AdminFoodActivity extends AppCompatActivity implements AdminFoodAda
             setDefaultImage(imageView, placeholderText);
             return;
         }
-
         if (imagePath.startsWith("http")) {
-            // It's a URL (Firebase Storage)
             imageView.setPadding(0, 0, 0, 0);
             imageView.setColorFilter(null);
             imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
             if (placeholderText != null) placeholderText.setVisibility(View.GONE);
             Glide.with(this).load(imagePath).placeholder(android.R.drawable.ic_menu_gallery).into(imageView);
-        }
-        else if (imagePath.length() > 200) {
-            // Legacy Base64 support (in case old foods still have it)
-            try {
-                String cleanBase64 = imagePath;
-                if (cleanBase64.contains(",")) cleanBase64 = cleanBase64.substring(cleanBase64.indexOf(",") + 1);
-
-                byte[] decodedString = android.util.Base64.decode(cleanBase64, android.util.Base64.DEFAULT);
-                Bitmap decodedBitmap = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
-
-                if (decodedBitmap != null) {
-                    imageView.setPadding(0, 0, 0, 0);
-                    imageView.setColorFilter(null);
-                    imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-                    imageView.setImageBitmap(decodedBitmap);
-                    if (placeholderText != null) placeholderText.setVisibility(View.GONE);
-                } else {
-                    setDefaultImage(imageView, placeholderText);
-                }
-            } catch (Exception e) {
-                setDefaultImage(imageView, placeholderText);
-            }
         } else {
-            // Drawable resource name
-            int resId = 0;
-            try { resId = getResources().getIdentifier(imagePath, "drawable", getPackageName()); } catch (Exception ignored) { }
-            if (resId != 0) {
-                imageView.setPadding(0, 0, 0, 0);
-                imageView.setColorFilter(null);
-                imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-                imageView.setImageResource(resId);
-                if (placeholderText != null) placeholderText.setVisibility(View.GONE);
-            } else {
-                setDefaultImage(imageView, placeholderText);
-            }
+            setDefaultImage(imageView, placeholderText);
         }
     }
 

@@ -18,19 +18,15 @@ public class ComboMealAdapter extends RecyclerView.Adapter<ComboMealAdapter.View
         void onComboClick(ComboMeal combo);
         void onAddComboClick(ComboMeal combo);
     }
-
     private List<ComboMeal> combos = new ArrayList<>();
     private OnComboClickListener listener;
-
     public void setCombos(List<ComboMeal> combos) {
         this.combos = combos != null ? combos : new ArrayList<>();
         notifyDataSetChanged();
     }
-
     public void setOnComboClickListener(OnComboClickListener listener) {
         this.listener = listener;
     }
-
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -38,45 +34,37 @@ public class ComboMealAdapter extends RecyclerView.Adapter<ComboMealAdapter.View
                 .inflate(R.layout.item_combo_meal_card, parent, false);
         return new ViewHolder(view);
     }
-
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         ComboMeal combo = combos.get(position);
-
         holder.tvName.setText(combo.getDisplayName());
         holder.tvMealType.setText(combo.getMealType());
-        holder.tvCalories.setText(String.format(Locale.getDefault(),
-                "%.0f kcal", combo.getTotalCalories()));
-        holder.tvItemCount.setText(String.format(Locale.getDefault(),
-                "%d items", combo.getItems().size()));
-
+        holder.tvCalories.setText(String.format(Locale.getDefault(), "%.0f kcal", combo.getTotalCalories()));
+        holder.tvItemCount.setText(String.format(Locale.getDefault(), "%d items", combo.getItems().size()));
         String imageUrl = combo.getPrimaryImage();
         if (imageUrl != null && imageUrl.startsWith("http")) {
             Glide.with(holder.itemView.getContext())
                     .load(imageUrl)
                     .centerCrop()
                     .into(holder.imgCombo);
+        } else {
+            holder.imgCombo.setImageResource(R.drawable.ic_combo_placeholder);
         }
-
         holder.itemView.setOnClickListener(v -> {
             if (listener != null) listener.onComboClick(combo);
         });
-
         holder.btnQuickAdd.setOnClickListener(v -> {
             if (listener != null) listener.onAddComboClick(combo);
         });
     }
-
     @Override
     public int getItemCount() {
         return combos.size();
     }
-
     static class ViewHolder extends RecyclerView.ViewHolder {
         ImageView imgCombo;
         TextView tvName, tvMealType, tvCalories, tvItemCount;
         Button btnQuickAdd;
-
         ViewHolder(View itemView) {
             super(itemView);
             imgCombo = itemView.findViewById(R.id.imgCombo);

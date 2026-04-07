@@ -1,6 +1,7 @@
 package com.fitfood.app;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -14,6 +15,7 @@ public class ComboMeal {
     private String comboName;
     private String displayName;
     private String mealType;
+    private String timePreference;   // "Morning", "Afternoon", "Evening"
     private final List<ComboItem> items;
     private double totalCalories;
     private double totalGrams;
@@ -52,40 +54,10 @@ public class ComboMeal {
             if (foodItem != null && foodItem.getGrams() > 0) {
                 double ratio = portionGrams / foodItem.getGrams();
                 this.calculatedCalories = foodItem.getKcal() * ratio;
-                this.calculatedProtein = estimateProtein() * ratio;
-                this.calculatedCarbs = estimateCarbs() * ratio;
-                this.calculatedFat = estimateFat() * ratio;
+                this.calculatedProtein = foodItem.getProtein() * ratio;
+                this.calculatedCarbs = foodItem.getCarbs() * ratio;
+                this.calculatedFat = foodItem.getFat() * ratio;
             }
-        }
-
-        private double estimateProtein() {
-            String cat = foodItem.getCategory();
-            if ("Protein".equals(cat) || "Meat".equals(cat) || "Fish".equals(cat)) {
-                return foodItem.getKcal() * 0.25 / 4;
-            } else if ("Dairy".equals(cat)) {
-                return foodItem.getKcal() * 0.20 / 4;
-            } else if ("Carbohydrate".equals(cat)) {
-                return foodItem.getKcal() * 0.10 / 4;
-            }
-            return foodItem.getKcal() * 0.05 / 4;
-        }
-
-        private double estimateCarbs() {
-            String cat = foodItem.getCategory();
-            if ("Carbohydrate".equals(cat) || "Grain".equals(cat) || "Fruit".equals(cat)) {
-                return foodItem.getKcal() * 0.60 / 4;
-            }
-            return foodItem.getKcal() * 0.30 / 4;
-        }
-
-        private double estimateFat() {
-            String cat = foodItem.getCategory();
-            if ("Fat".equals(cat) || "Nuts".equals(cat)) {
-                return foodItem.getKcal() * 0.80 / 9;
-            } else if ("Protein".equals(cat) && foodItem.getName().toLowerCase().contains("pork")) {
-                return foodItem.getKcal() * 0.40 / 9;
-            }
-            return foodItem.getKcal() * 0.20 / 9;
         }
 
         public FoodItem getFoodItem() { return foodItem; }
@@ -118,6 +90,14 @@ public class ComboMeal {
         this.nutritionalScore = 0;
         this.calorieAccuracy = 0;
         this.timesShown = 0;
+        this.timePreference = determineTimePreference();
+    }
+
+    private String determineTimePreference() {
+        int hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
+        if (hour >= 5 && hour < 11) return "Morning";
+        if (hour >= 11 && hour < 17) return "Afternoon";
+        return "Evening";
     }
 
     public void addItem(ComboItem item) {
@@ -178,6 +158,7 @@ public class ComboMeal {
         return map;
     }
 
+    // Getters and setters
     public String getComboId() { return comboId; }
     public void setComboId(String comboId) { this.comboId = comboId; }
     public String getComboName() { return comboName; }
@@ -186,6 +167,8 @@ public class ComboMeal {
     public void setDisplayName(String displayName) { this.displayName = displayName; }
     public String getMealType() { return mealType; }
     public void setMealType(String mealType) { this.mealType = mealType; }
+    public String getTimePreference() { return timePreference; }
+    public void setTimePreference(String timePreference) { this.timePreference = timePreference; }
     public List<ComboItem> getItems() { return new ArrayList<>(items); }
     public double getTotalCalories() { return totalCalories; }
     public double getTotalGrams() { return totalGrams; }
@@ -200,9 +183,19 @@ public class ComboMeal {
     public boolean wasAccepted() { return wasAccepted; }
     public void setAccepted(boolean accepted) { this.wasAccepted = accepted; }
     public String getPrimaryImage() {
-        if (primaryImage != null) return primaryImage;
-        if (!items.isEmpty() && items.get(0).getFoodItem() != null) {
-            return items.get(0).getFoodItem().getImage();
+        if (primaryImage != null && !primaryImage.isEmpty()) return primaryImage;
+        // Prioritize main dish (Protein, Meat, Fish) for cover image
+        for (ComboItem item : items) {
+            String cat = item.getFoodItem().getCategory();
+            if (cat != null && (cat.equalsIgnoreCase("Protein") || cat.equalsIgnoreCase("Meat") || cat.equalsIgnoreCase("Fish"))) {
+                String img = item.getFoodItem().getImage();
+                if (img != null && !img.isEmpty()) return img;
+            }
+        }
+        // Fallback to first item with image
+        for (ComboItem item : items) {
+            String img = item.getFoodItem().getImage();
+            if (img != null && !img.isEmpty()) return img;
         }
         return null;
     }

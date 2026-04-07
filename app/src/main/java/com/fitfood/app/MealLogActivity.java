@@ -106,7 +106,6 @@ public class MealLogActivity extends AppCompatActivity {
                             if (fetchedLimit != null && fetchedLimit > 0) dailyCalorieLimit = fetchedLimit;
                         }
                         if (doc.contains("weight")) currentWeight = doc.getDouble("weight");
-
                         String goal = getSharedPreferences("fitfood_prefs", MODE_PRIVATE).getString("goalType", "loss");
                         userGoal = goal.equals("gain") ? "weight_gain" : "weight_loss";
                         updateDailyTotalUI();
@@ -119,7 +118,7 @@ public class MealLogActivity extends AppCompatActivity {
             case "Lunch": return sectionLunch;
             case "Dinner": return sectionDinner;
             case "Snacks": return sectionSnacks;
-            case "Breakfast": default: return sectionBreakfast;
+            default: return sectionBreakfast;
         }
     }
 
@@ -138,9 +137,10 @@ public class MealLogActivity extends AppCompatActivity {
         ImageView imgFood = new ImageView(this);
         imgFood.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT));
         imgFood.setScaleType(ImageView.ScaleType.CENTER_CROP);
-
         if (imageBase64 != null && !imageBase64.isEmpty()) {
-            if (!imageBase64.startsWith("http")) {
+            if (imageBase64.startsWith("http")) {
+                Glide.with(this).load(imageBase64).into(imgFood);
+            } else {
                 new Thread(() -> {
                     try {
                         byte[] decodedString = Base64.decode(imageBase64, Base64.DEFAULT);
@@ -148,76 +148,36 @@ public class MealLogActivity extends AppCompatActivity {
                         runOnUiThread(() -> imgFood.setImageBitmap(decodedByte));
                     } catch (Exception ignored) {}
                 }).start();
-            } else {
-                Glide.with(this).load(imageBase64).into(imgFood);
-            }
-
-             if (imageBase64.length() > 200) {
-                try {
-                    String cleanBase64 = imageBase64;
-                    if (cleanBase64.contains(",")) {
-                        cleanBase64 = cleanBase64.substring(cleanBase64.indexOf(",") + 1);
-                    }
-                    byte[] decodedString = Base64.decode(cleanBase64, Base64.DEFAULT);
-                    Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
-                    if (decodedByte != null) {
-                        imgFood.setImageBitmap(decodedByte);
-                    } else {
-                        imgFood.setImageResource(R.drawable.food_guide);
-                    }
-                } catch (Exception e) {
-                    imgFood.setImageResource(R.drawable.food_guide);
-                }
-            }
-
-            else {
-                try {
-                    int resId = getResources().getIdentifier(imageBase64, "drawable", getPackageName());
-                    if (resId != 0) imgFood.setImageResource(resId);
-                    else imgFood.setImageResource(R.drawable.food_guide);
-                } catch (Exception e) {
-                    imgFood.setImageResource(R.drawable.food_guide);
-                }
             }
         } else {
             imgFood.setImageResource(R.drawable.food_guide);
         }
-
         cardImage.addView(imgFood);
         row.addView(cardImage);
-
         TextView tvFood = new TextView(this);
         tvFood.setText(String.format(Locale.getDefault(), "%s\n%.0fg", foodName, grams));
         tvFood.setTextSize(16f);
         tvFood.setTextColor(Color.parseColor("#424242"));
-
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f);
         tvFood.setLayoutParams(params);
-
         TextView tvCal = new TextView(this);
         tvCal.setText(String.format(Locale.getDefault(), "%.0f kcal", kcal));
         tvCal.setTextSize(14f);
         tvCal.setTypeface(null, android.graphics.Typeface.BOLD);
         tvCal.setTextColor(Color.parseColor("#FF5722"));
         tvCal.setPadding(16, 0, 16, 0);
-
         ImageView btnDelete = new ImageView(this);
         btnDelete.setImageResource(android.R.drawable.ic_menu_close_clear_cancel);
         btnDelete.setColorFilter(Color.parseColor("#BDBDBD"));
         btnDelete.setPadding(16, 8, 8, 8);
-
         row.addView(tvFood);
         row.addView(tvCal);
         row.addView(btnDelete);
-
         section.container.addView(row);
         section.currentCalories += (int) Math.round(kcal);
         section.subtotal.setText(section.currentCalories + " kcal");
         updateDailyTotalUI();
-
-        if (saveToDb) {
-            saveMealToFirebase(section.name, foodName, grams, kcal, imageBase64);
-        }
+        if (saveToDb) saveMealToFirebase(section.name, foodName, grams, kcal, imageBase64);
         btnDelete.setOnClickListener(v -> new AlertDialog.Builder(this)
                 .setTitle("Remove Item?")
                 .setMessage("Delete " + foodName + " from log?")
@@ -255,9 +215,7 @@ public class MealLogActivity extends AppCompatActivity {
 
     private void attemptFinishDay() {
         String message = "Are you done eating for today? This will save your progress.";
-        if (dailyTotal < 500) {
-            message = "Your calorie count is very low (" + dailyTotal + " kcal). Are you sure you want to finish the day?";
-        }
+        if (dailyTotal < 500) message = "Your calorie count is very low (" + dailyTotal + " kcal). Are you sure you want to finish the day?";
         new AlertDialog.Builder(this)
                 .setTitle("Complete Day")
                 .setMessage(message)
@@ -311,13 +269,11 @@ public class MealLogActivity extends AppCompatActivity {
         if (auth.getCurrentUser() == null) return;
         String userId = auth.getCurrentUser().getUid();
         String date = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
-
         Map<String, Object> meal = new HashMap<>();
         meal.put("foodName", food);
         meal.put("grams", grams);
         meal.put("calories", kcal);
         meal.put("foodImage", imageBase64);
-
         db.collection("mealLogs").document(userId)
                 .collection("dates").document(date)
                 .collection(type).add(meal);
@@ -370,7 +326,6 @@ public class MealLogActivity extends AppCompatActivity {
                                         Double kcal = d.getDouble("calories");
                                         Double grams = d.getDouble("grams");
                                         String img = d.getString("foodImage");
-
                                         if (name != null && kcal != null) {
                                             addMealToSection(getSectionByName(type), name, kcal, grams != null ? grams : 0, img, false);
                                         }
@@ -382,65 +337,66 @@ public class MealLogActivity extends AppCompatActivity {
 
     private void initializeComboMealSection() {
         LinearLayout comboContainer = findViewById(R.id.mealLogContent);
-        comboMealView = new ComboMealView(this, comboContainer);
+        comboMealView = new ComboMealView(this, comboContainer, true);
         comboMealView.setOnComboActionListener(new ComboMealView.OnComboActionListener() {
             @Override
             public void onAddComboToLog(ComboMeal combo) {
-                addComboToMealLog(combo);
+                // Legacy fallback - ask for meal type
+                showMealTypeDialogAndAddCombo(combo);
             }
-
+            @Override
+            public void onAddComboToLogWithMealType(ComboMeal combo, String mealType) {
+                addComboToMealLog(combo, mealType);
+            }
             @Override
             public void onViewComboDetails(ComboMeal combo) {
                 showComboDetailsDialog(combo);
             }
-
             @Override
             public void onRefreshCombo() {
                 generateNewComboSuggestion();
             }
-
             @Override
             public void onLikeCombo(ComboMeal combo) {
                 saveLikedCombo(combo);
             }
         });
-
         if (comboMealView.getView().getParent() == null) {
             comboContainer.addView(comboMealView.getView(), 0);
         }
+    }
+
+    private void showMealTypeDialogAndAddCombo(ComboMeal combo) {
+        final String[] mealTypes = {"Breakfast", "Lunch", "Dinner", "Snacks"};
+        new AlertDialog.Builder(this)
+                .setTitle("Add to which meal?")
+                .setItems(mealTypes, (dialog, which) -> addComboToMealLog(combo, mealTypes[which]))
+                .setNegativeButton("Cancel", null)
+                .show();
     }
 
     private void loadFoodsForComboGeneration() {
         SharedPreferences prefs = getSharedPreferences("fitfood_prefs", MODE_PRIVATE);
         String goalChoice = prefs.getString("goalType", "loss");
         userGoal = goalChoice.equals("gain") ? "weight_gain" : "weight_loss";
-
         FirebaseFirestore.getInstance()
                 .collection("foods_v2")
                 .get()
                 .addOnSuccessListener(querySnapshot -> {
                     availableFoodsCache = new ArrayList<>();
-
                     for (QueryDocumentSnapshot doc : querySnapshot) {
                         try {
                             FoodItem food = doc.toObject(FoodItem.class);
                             food.setId(doc.getId());
-
                             double baseGrams = food.getGrams();
-                            if (userGoal.equals("weight_loss")) {
-                                food.setSuggestedGrams(baseGrams * 0.85);
-                            } else if (userGoal.equals("weight_gain")) {
-                                food.setSuggestedGrams(baseGrams * 1.15);
-                            } else {
-                                food.setSuggestedGrams(baseGrams);
-                            }
-
+                            if (userGoal.equals("weight_loss")) food.setSuggestedGrams(baseGrams * 0.85);
+                            else if (userGoal.equals("weight_gain")) food.setSuggestedGrams(baseGrams * 1.15);
+                            else food.setSuggestedGrams(baseGrams);
                             availableFoodsCache.add(food);
                         } catch (Exception e) {
                             Log.e("MealLog", "Error parsing food: " + e.getMessage());
                         }
                     }
-
                     generateNewComboSuggestion();
                 })
                 .addOnFailureListener(e -> {
@@ -454,14 +410,12 @@ public class MealLogActivity extends AppCompatActivity {
             comboMealView.getView().setVisibility(View.GONE);
             return;
         }
-
         String currentMealType = determineCurrentMealType();
         ComboMeal combo = ComboMealGenerator.generateCombo(
                 availableFoodsCache,
                 currentMealType,
                 userGoal
         );
-
         if (combo != null && combo.isValid()) {
             comboMealView.setComboMeal(combo);
             comboMealView.getView().setVisibility(View.VISIBLE);
@@ -472,21 +426,14 @@ public class MealLogActivity extends AppCompatActivity {
 
     private String determineCurrentMealType() {
         int hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
-
         if (hour >= 5 && hour < 11) return "Breakfast";
         if (hour >= 11 && hour < 15) return "Lunch";
         if (hour >= 15 && hour < 18) return "Snacks";
         return "Dinner";
     }
 
-    private void addComboToMealLog(ComboMeal combo) {
+    private void addComboToMealLog(ComboMeal combo, String mealType) {
         if (combo == null || combo.getItems().isEmpty()) return;
-
-        String mealType = combo.getMealType();
-        if (mealType == null || mealType.isEmpty()) {
-            mealType = determineCurrentMealType();
-        }
-
         MealSection targetSection = getSectionByName(mealType);
         for (ComboMeal.ComboItem item : combo.getItems()) {
             FoodItem food = item.getFoodItem();
@@ -499,7 +446,6 @@ public class MealLogActivity extends AppCompatActivity {
                     true
             );
         }
-
         Toast.makeText(this,
                 String.format(Locale.getDefault(), "Added %d items to %s",
                         combo.getItems().size(), mealType),
@@ -509,22 +455,17 @@ public class MealLogActivity extends AppCompatActivity {
     private void showComboDetailsDialog(ComboMeal combo) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(combo.getDisplayName());
-
         StringBuilder message = new StringBuilder();
         message.append("Meal Type: ").append(combo.getMealType()).append("\n\n");
         message.append("Items:\n");
-
         for (ComboMeal.ComboItem item : combo.getItems()) {
             message.append("• ").append(item.getFoodItem().getName()).append("\n");
             message.append("  ").append(item.getDisplayText()).append("\n\n");
         }
-
-        message.append("\nTotal: ")
-                .append(String.format(Locale.getDefault(), "%.0f kcal, %.0fg",
-                        combo.getTotalCalories(), combo.getTotalGrams()));
-
+        message.append("\nTotal: ").append(String.format(Locale.getDefault(), "%.0f kcal, %.0fg",
+                combo.getTotalCalories(), combo.getTotalGrams()));
         builder.setMessage(message.toString());
-        builder.setPositiveButton("Add to Log", (dialog, which) -> addComboToMealLog(combo));
+        builder.setPositiveButton("Add to Log", (dialog, which) -> showMealTypeDialogAndAddCombo(combo));
         builder.setNegativeButton("Close", null);
         builder.show();
     }
